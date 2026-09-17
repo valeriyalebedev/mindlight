@@ -19,17 +19,19 @@ Ship the smallest end-to-end loop, entirely in the browser:
 
 Session state lives in memory for the current browser session only.
 
-The product UI and the LLM integration are **not built yet**; the repository is
-currently a minimal foundation that this flow will be built on.
+The **landing screen** and the **brain dump screen** exist today. Processing, the
+next move reveal and the LLM integration are **not built yet**.
 
 ## Tech stack
 
 - [React 19](https://react.dev/) with [TypeScript](https://www.typescriptlang.org/) (strict mode)
 - [Vite](https://vite.dev/) for dev server and building
 - [ESLint](https://eslint.org/) (flat config) for linting
+- [Sora](https://fonts.google.com/specimen/Sora) (UI, body and headlines),
+  loaded from Google Fonts
 
-No UI framework, state library, router, or backend. No additional dependencies
-beyond the ones above.
+No UI framework, state library, router, or backend, and no npm dependencies
+beyond the ones above. Styles are plain CSS and CSS Modules.
 
 ## Install
 
@@ -72,15 +74,22 @@ mindlight/
 ├── index.html                  # Vite HTML entry point
 ├── src/
 │   ├── main.tsx                # React entry point (mounts App)
-│   ├── App.tsx                 # Placeholder shell (product UI not built yet)
+│   ├── App.tsx                 # Session state + which screen is showing
 │   ├── index.css               # Global styles: design tokens + reset
 │   ├── types/
 │   │   └── mindlight.ts        # Domain model (brain dump, next move, session)
 │   ├── app/                    # App-level composition (empty)
-│   ├── components/             # Shared presentational components (empty)
+│   ├── components/
+│   │   ├── AnimatedBackground.tsx  # Living pastel atmosphere (aurora, light)
+│   │   ├── GlassNav.tsx        # Translucent glass pill navigation
+│   │   └── GlowOrb.tsx         # Recurring "small light in the dark" element
 │   ├── features/
-│   │   ├── brain-dump/         # Brain dump capture feature (empty)
-│   │   └── next-move/          # Next move feature (empty)
+│   │   ├── landing/            # Entry screen: headline + "Get started"
+│   │   │   └── LandingScreen.tsx
+│   │   ├── brain-dump/         # Brain dump screen + form
+│   │   │   ├── BrainDumpScreen.tsx
+│   │   │   └── BrainDumpForm.tsx
+│   │   └── next-move/          # Next move feature (not built yet)
 │   ├── lib/                    # Non-React helpers (empty)
 │   ├── mocks/                  # Fixtures for local development (empty)
 │   └── styles/                 # Extracted CSS, if needed (empty)

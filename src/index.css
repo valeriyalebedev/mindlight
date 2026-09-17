@@ -1,39 +1,65 @@
-/* Mindlight global styles: design tokens + a small reset. */
+/*
+ * Mindlight global styles: design tokens, typography and a small reset.
+ *
+ * Visual language: soft dreamy pastels, white type, translucent glass.
+ * The gradient below is the static, full-screen base layer. The living
+ * atmosphere - drifting pastel light, a slow aurora and a warm bloom - is
+ * layered on top of it by components/AnimatedBackground.module.css.
+ */
 
 :root {
-  /* Design tokens */
-  --bg: #ffffff;
-  --surface: #f6f6f8;
-  --text: #1b1a1f;
-  --text-muted: #6b6375;
-  --border: #e4e3e8;
-  --accent: #6d28d9;
+  /* Pastel palette */
+  --peach: #ffe0ad;
+  --pink: #f6b4df;
+  --lavender: #d9c5f6;
+  --blue: #c5ddf6;
+  --near-white: #fbfaf3;
 
-  --font-sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: ui-monospace, Menlo, Consolas, monospace;
+  /*
+   * Soft plum, used inside glass surfaces and as a very light readability
+   * wash. The landing mockup stays bright, so this remains deliberately subtle.
+   */
+  --haze: rgb(120 82 132 / 10%);
+  --glass: rgb(255 255 255 / 10%);
+  --glass-strong: rgb(255 255 255 / 14%);
+  --field: rgb(120 82 132 / 24%);
+  --glass-border: rgb(255 255 255 / 64%);
 
-  --radius: 8px;
+  /* The warm light of the Mindlight mark */
+  --light: #fffaf2;
 
-  color-scheme: light dark;
+  /* Type */
+  --text: #ffffff;
+  --text-placeholder: rgb(255 255 255 / 72%);
+
+  --font-sans: 'Sora', system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  /* Layout */
+  --column-width: 560px;
+  --pill: 999px;
+
+  color-scheme: light;
   font-family: var(--font-sans);
-  line-height: 1.45;
+  font-size: 17px;
+  line-height: 1.6;
   color: var(--text);
-  background: var(--bg);
+  background-color: var(--near-white);
+  /*
+   * On :root the gradient propagates to the canvas, so it covers the whole
+   * viewport at any content height. The stops are pinned to the viewport so
+   * the pastels never band or repeat as the page grows.
+   */
+  background-image:
+    radial-gradient(90% 75% at 50% 43%, rgb(246 180 223 / 82%) 0%, rgb(246 180 223 / 0%) 64%),
+    radial-gradient(95% 72% at 52% 74%, rgb(197 221 246 / 78%) 0%, rgb(197 221 246 / 0%) 68%),
+    linear-gradient(180deg, var(--peach) 0%, #fbd0c9 25%, var(--pink) 47%, var(--blue) 76%, var(--near-white) 100%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #14151a;
-    --surface: #1d1f27;
-    --text: #f2f2f5;
-    --text-muted: #9ca3af;
-    --border: #2c2f3a;
-    --accent: #a78bfa;
-  }
 }
 
 /* Reset */
@@ -50,7 +76,6 @@ body {
 
 #root {
   min-height: 100svh;
-  padding: 2rem;
 }
 
 h1,
@@ -89,4 +114,15 @@ select {
 
 button {
   cursor: pointer;
+}
+
+/* Respect users who prefer less motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
