@@ -1,0 +1,63 @@
+.screen {
+  width: 100%;
+}
+
+.column {
+  width: 100%;
+  max-width: var(--column-width);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.15rem;
+  text-align: center;
+}
+
+.eyebrow {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 85%);
+}
+
+/* The move the user just accepted, kept visible as a quiet reminder. */
+.recap {
+  max-width: 40ch;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: rgb(255 255 255 / 88%);
+}
+
+.headline {
+  font-size: clamp(1.75rem, 5vw, 2.75rem);
+  font-weight: 300;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--text);
+  text-wrap: balance;
+  text-shadow: 0 2px 32px rgb(74 54 98 / 28%);
+}
+
+.action {
+  margin-top: 0.35rem;
+  padding: 0.9rem 2rem;
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text);
+  background: var(--glass-strong);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--pill);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  transition: background-color 160ms ease;
+}
+
+.action:hover {
+  background: rgb(255 255 255 / 22%);
+}
+
+.action:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+}

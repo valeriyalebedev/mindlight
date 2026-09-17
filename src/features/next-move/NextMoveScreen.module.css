@@ -1,0 +1,89 @@
+.screen {
+  width: 100%;
+}
+
+/*
+ * One move in one glass card. Uses the existing tokens only - no new visual
+ * language is introduced here, because this screen's design is still to come.
+ */
+.card {
+  width: 100%;
+  max-width: var(--column-width);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.15rem;
+  padding: clamp(1.75rem, 5vw, 2.75rem);
+  text-align: center;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 2rem;
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+}
+
+.eyebrow {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 85%);
+}
+
+.title {
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  font-weight: 300;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: var(--text);
+  text-wrap: balance;
+  text-shadow: 0 2px 32px rgb(74 54 98 / 28%);
+}
+
+.rationale {
+  max-width: 42ch;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: rgb(255 255 255 / 92%);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.primary,
+.secondary {
+  padding: 0.9rem 2rem;
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--pill);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  transition: background-color 160ms ease;
+}
+
+.primary {
+  background: var(--glass-strong);
+}
+
+.secondary {
+  background: transparent;
+}
+
+.primary:hover,
+.secondary:hover {
+  background: rgb(255 255 255 / 22%);
+}
+
+.primary:focus-visible,
+.secondary:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+}
