@@ -1,0 +1,76 @@
+.form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/*
+ * The headline above already asks the question out loud, so the label is kept
+ * for assistive technology only instead of repeating it on screen.
+ */
+.label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  clip-path: inset(50%);
+  border: 0;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 10.5rem;
+  padding: 1.15rem 1.35rem;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--field);
+  border: 1px solid var(--glass-border);
+  border-radius: 1.5rem;
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  resize: vertical;
+  transition: border-color 160ms ease;
+}
+
+.textarea::placeholder {
+  color: var(--text-placeholder);
+}
+
+.textarea:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+.button {
+  padding: 0.9rem 2.5rem;
+  font-size: 1.0625rem;
+  font-weight: 400;
+  color: var(--text);
+  background: var(--glass-strong);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--pill);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  transition: background-color 160ms ease;
+}
+
+.button:hover:not(:disabled) {
+  background: rgb(255 255 255 / 22%);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+}
+
+.button:disabled {
+  color: rgb(255 255 255 / 65%);
+  background: rgb(255 255 255 / 12%);
+  border-color: rgb(255 255 255 / 32%);
+  cursor: not-allowed;
+}

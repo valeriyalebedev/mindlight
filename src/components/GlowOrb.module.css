@@ -1,0 +1,14 @@
+.orb {
+  display: block;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  /* A soft warm light rather than a solid dot: no hard edge on the pastels. */
+  background: radial-gradient(
+    circle,
+    var(--light) 0%,
+    rgb(255 250 242 / 55%) 38%,
+    rgb(255 250 242 / 0%) 72%
+  );
+  opacity: 0.92;
+}
