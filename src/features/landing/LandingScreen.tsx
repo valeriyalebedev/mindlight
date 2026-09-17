@@ -14,7 +14,7 @@ function LandingScreen({ onGetStarted }: LandingScreenProps) {
         More in your life.
       </h1>
 
-      <PearlOrb className={styles.orb} size="clamp(600px, 85vw, 800px)">
+      <PearlOrb className={styles.orb} size="clamp(600px, 85vw, 400px)">
         <span className={styles.orbTitle}>What&rsquo;s on your mind?</span>
         <span className={styles.orbText}>
           Drop your thoughts.
