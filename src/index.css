@@ -1,0 +1,92 @@
+/* Mindlight global styles: design tokens + a small reset. */
+
+:root {
+  /* Design tokens */
+  --bg: #ffffff;
+  --surface: #f6f6f8;
+  --text: #1b1a1f;
+  --text-muted: #6b6375;
+  --border: #e4e3e8;
+  --accent: #6d28d9;
+
+  --font-sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, Menlo, Consolas, monospace;
+
+  --radius: 8px;
+
+  color-scheme: light dark;
+  font-family: var(--font-sans);
+  line-height: 1.45;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14151a;
+    --surface: #1d1f27;
+    --text: #f2f2f5;
+    --text-muted: #9ca3af;
+    --border: #2c2f3a;
+    --accent: #a78bfa;
+  }
+}
+
+/* Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+}
+
+#root {
+  min-height: 100svh;
+  padding: 2rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+ul,
+ol,
+dl {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
