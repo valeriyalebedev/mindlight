@@ -80,3 +80,57 @@
     max-width: var(--column-desk-width);
   }
 }
+
+.hero {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(2rem, 6vh, 3.25rem);
+  text-align: center;
+  animation: hero-settle 1.4s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+.orb {
+  filter: drop-shadow(0 28px 42px rgb(134 85 214 / 22%));
+}
+
+/*
+ * In-orb type. The question takes the orb's dark, warm style rather than the
+ * white headline style used outside the ball; the values match the landing
+ * screen so both balls read the same way.
+ */
+.orbTitle {
+  max-width: 10ch;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(1.75rem, 5vw, 3.35rem);
+  font-weight: 700;
+  line-height: 1.02;
+  color: #241656;
+}
+
+.orbText {
+  max-width: 22ch;
+  font-size: clamp(0.78rem, 1.65vw, 1.08rem);
+  font-weight: 600;
+  line-height: 1.35;
+  color: rgb(36 22 86 / 82%);
+}
+
+@keyframes hero-settle {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero {
+    animation: none;
+  }
+}

@@ -1,0 +1,38 @@
+.screen {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/*
+ * Minimal waiting state: a slow breath rather than a spinner, so the beat reads
+ * as thinking instead of loading. Replaced when the designer delivers this
+ * screen.
+ */
+.status {
+  max-width: 32ch;
+  font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+  font-weight: 300;
+  line-height: 1.45;
+  color: var(--text);
+  text-align: center;
+  text-shadow: 0 1px 24px rgb(74 54 98 / 30%);
+  animation: processing-breathe 2.6s ease-in-out infinite;
+}
+
+@keyframes processing-breathe {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status {
+    animation: none;
+  }
+}

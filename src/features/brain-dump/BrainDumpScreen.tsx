@@ -13,10 +13,11 @@ type BrainDumpScreenProps = {
 }
 
 /**
- * First Mindlight screen: "I don't need to organize my thoughts first."
+ * Step 3 of the flow: "I don't need to organize my thoughts first."
  *
- * The copy asks the question, the form is the only interaction, and nothing is
- * required of the user beyond writing.
+ * The question and the prompt sit inside the ball, so it stays the centre of the
+ * screen. The form stays outside the ball and below it, where it can be typed
+ * in - the orb's content layer is not interactive.
  */
 function BrainDumpScreen({ onSubmit }: BrainDumpScreenProps) {
   const [brainProcess, setBrainProcess] = useState<'await' | 'thinking' | 'done'>('await')
@@ -34,7 +35,14 @@ function BrainDumpScreen({ onSubmit }: BrainDumpScreenProps) {
   }
 
   return (
-    <section className={styles.screen}>
+    <section className={styles.hero}>
+      <PearlOrb className={styles.orb} size="clamp(600px, 85vw, 400px)">
+        <h1 className={styles.orbTitle}>What&rsquo;s taking up space in your head?</h1>
+        <span className={styles.orbText}>
+          Put it here. It doesn&rsquo;t need to make sense yet.
+        </span>
+      </PearlOrb>
+
       <div className={styles.column}>
         <div className={styles.orbSlot}>
           <PearlOrb className={styles.orb} isTurning={brainProcess === 'thinking'} />

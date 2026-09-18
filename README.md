@@ -19,8 +19,15 @@ Ship the smallest end-to-end loop, entirely in the browser:
 
 Session state lives in memory for the current browser session only.
 
-The **landing screen** and the **brain dump screen** exist today. Processing, the
-next move reveal and the LLM integration are **not built yet**.
+The **whole loop is walkable in the browser today**: landing, brain dump,
+processing, one next move, and After Done after accepting. Two honest caveats:
+
+- The next move is produced by a **local placeholder** (`src/lib/stubNextMove.ts`),
+  not by a model. The LLM integration is **not built yet**.
+- The **visual design is still in progress**, so the processing, next move and
+  After Done screens are behaviour-first and deliberately plain.
+
+Screens still to build: onboarding, home, history, document view, settings.
 
 ## Tech stack
 
@@ -74,7 +81,7 @@ mindlight/
 ├── index.html                  # Vite HTML entry point
 ├── src/
 │   ├── main.tsx                # React entry point (mounts App)
-│   ├── App.tsx                 # Session state + which screen is showing
+│   ├── App.tsx                 # Session state + derives the current flow step
 │   ├── index.css               # Global styles: design tokens + reset
 │   ├── types/
 │   │   └── mindlight.ts        # Domain model (brain dump, next move, session)
@@ -82,6 +89,7 @@ mindlight/
 │   ├── components/
 │   │   ├── AnimatedBackground.tsx  # Living pastel atmosphere (aurora, light)
 │   │   ├── GlassNav.tsx        # Translucent glass pill navigation
+│   │   ├── PearlOrb.tsx        # Iridescent orb, optionally wrapping content
 │   │   └── GlowOrb.tsx         # Recurring "small light in the dark" element
 │   ├── features/
 │   │   ├── landing/            # Entry screen: headline + "Get started"
@@ -89,8 +97,13 @@ mindlight/
 │   │   ├── brain-dump/         # Brain dump screen + form
 │   │   │   ├── BrainDumpScreen.tsx
 │   │   │   └── BrainDumpForm.tsx
-│   │   └── next-move/          # Next move feature (not built yet)
-│   ├── lib/                    # Non-React helpers (empty)
+│   │   ├── next-move/          # Processing beat + the single next move
+│   │   │   ├── ProcessingScreen.tsx
+│   │   │   └── NextMoveScreen.tsx
+│   │   └── after-done/         # What follows accepting the move (stub)
+│   │       └── AfterDoneScreen.tsx
+│   ├── lib/
+│   │   └── stubNextMove.ts     # Placeholder next move (pre-LLM)
 │   ├── mocks/                  # Fixtures for local development (empty)
 │   └── styles/                 # Extracted CSS, if needed (empty)
 ├── tsconfig.json               # TS solution config
