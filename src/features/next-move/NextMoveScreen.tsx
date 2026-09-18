@@ -1,10 +1,13 @@
 import { useId } from 'react'
+import { createPortal } from 'react-dom'
 import type { NextMove, UserChoice } from '../../types/mindlight'
+import  MainButton from '../../components/Button';
+import orbImage from '../../static/Orb.png'
 import styles from './NextMoveScreen.module.css'
 
 type NextMoveScreenProps = {
   /** The single next move for this session. */
-  nextMove: NextMove
+  nextMove?: NextMove
   /** What the user did with it: accept, "Not now", or ask for another. */
   onChoose: (choice: UserChoice) => void
 }
@@ -19,27 +22,43 @@ type NextMoveScreenProps = {
 function NextMoveScreen({ nextMove, onChoose }: NextMoveScreenProps) {
   const titleId = useId()
 
+  if (!nextMove) {
+    return null
+  }
+
   return (
     <section className={styles.screen}>
-      <article className={styles.card} aria-labelledby={titleId}>
+      {createPortal(
+        <div className={styles.orbPortal} aria-hidden="true">
+          <img className={styles.portalOrb} src={orbImage} alt="" />
+        </div>,
+        document.body,
+      )}
+      <div className={styles.headingWrapper}>
+        <h1 className={styles.heading}>Don’t think about everything</h1>
         <p className={styles.eyebrow}>Your next move</p>
+      </div>
+      <article className={styles.card} aria-labelledby={titleId}>
 
-        <h1 id={titleId} className={styles.title}>
-          {nextMove.title}
-        </h1>
+        <div className={styles.content}>
+          <h1 id={titleId} className={styles.title}>
+            {nextMove.title}
+          </h1>
+          <p className={styles.rationale}>{nextMove.rationale}</p>
+        </div>
 
-        <p className={styles.rationale}>{nextMove.rationale}</p>
+        
 
         <div className={styles.actions}>
-          <button type="button" className={styles.primary} onClick={() => onChoose('accept')}>
-            Accept
-          </button>
-          <button type="button" className={styles.secondary} onClick={() => onChoose('alternative')}>
-            Show me another
-          </button>
-          <button type="button" className={styles.secondary} onClick={() => onChoose('not-now')}>
+          <MainButton type="button" onClick={() => onChoose('accept')}>
+            Done
+          </MainButton>
+          <MainButton type="button" onClick={() => onChoose('alternative')}>
+            Skip
+          </MainButton>
+          <MainButton type="button" onClick={() => onChoose('not-now')}>
             Not now
-          </button>
+          </MainButton>
         </div>
       </article>
     </section>

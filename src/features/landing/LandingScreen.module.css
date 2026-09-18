@@ -115,10 +115,6 @@
   animation: hero-settle 1.4s cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 
-.orb {
-  filter: drop-shadow(0 28px 42px rgb(134 85 214 / 22%));
-}
-
 /*center
  * In-orb type. The question takes the orb's dark, warm style rather than the
  * white headline style used outside the ball; the values match the landing

@@ -42,6 +42,6 @@
 
 
 .mainButton:disabled {
-  color: rgba(255, 255, 255, 0.5);
-  border: none
+  color: #7A206066;
+  border: none;
 }

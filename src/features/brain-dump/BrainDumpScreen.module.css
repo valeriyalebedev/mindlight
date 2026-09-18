@@ -132,11 +132,6 @@
   animation: hero-settle 1.4s cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 
-.orb {
-  filter: drop-shadow(0 28px 42px rgb(134 85 214 / 22%));
-}
-
-
 @keyframes hero-settle {
   from {
     opacity: 0;
