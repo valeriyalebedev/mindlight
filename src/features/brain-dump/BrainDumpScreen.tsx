@@ -1,8 +1,11 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import PearlOrb from '../../components/PearlOrb';
+import orbImage from '../../static/Orb.png';
 import type { BrainDump } from '../../types/mindlight';
 import BrainDumpForm from './BrainDumpForm';
 import BrainDumpThinking from './BrainDumpThinking';
+import BrainDumpDone from './BrainDumpDone';
 import styles from './BrainDumpScreen.module.css';
 
 type BrainDumpScreenProps = {
@@ -10,6 +13,8 @@ type BrainDumpScreenProps = {
   onSubmit?: (brainDump: BrainDump) => void
   /** The brain dump submitted most recently, if any. */
   submittedBrainDump?: BrainDump | null
+  /** Called when processing finishes and the next move should be shown. */
+  onFallback?: () => void
 }
 
 /**
@@ -19,47 +24,46 @@ type BrainDumpScreenProps = {
  * screen. The form stays outside the ball and below it, where it can be typed
  * in - the orb's content layer is not interactive.
  */
-function BrainDumpScreen({ onSubmit }: BrainDumpScreenProps) {
-  const [brainProcess, setBrainProcess] = useState<'await' | 'thinking' | 'done'>('await')
+function BrainDumpScreen({ onSubmit, onFallback }: BrainDumpScreenProps) {
+  const [brainProcess, setBrainProcess] = useState<'await' | 'processing' | 'done'>('await')
   function handleSubmit(text: string) {
     onSubmit?.({
       text,
       createdAt: new Date().toISOString(),
     })
-    setBrainProcess('thinking')
+    setBrainProcess('processing')
   }
 
   function handleFallback() {
     setBrainProcess('done')
-    setTimeout(() => setBrainProcess('await'), 5500)
+    setTimeout(() => onFallback?.(), 1000)
   }
 
   return (
     <section className={styles.hero}>
-      <PearlOrb className={styles.orb} size="clamp(600px, 85vw, 400px)">
-        <h1 className={styles.orbTitle}>What&rsquo;s taking up space in your head?</h1>
-        <span className={styles.orbText}>
-          Put it here. It doesn&rsquo;t need to make sense yet.
-        </span>
-      </PearlOrb>
-
       <div className={styles.column}>
-        <div className={styles.orbSlot}>
-          <PearlOrb className={styles.orb} isTurning={brainProcess === 'thinking'} />
-        </div>
-
-        {
-          brainProcess === 'await' && (
-            <div>
-              <h1 className={styles.headline}>What&rsquo;s taking up space in your head?</h1>
-              <p className={styles.support}>Put it here. It doesn&rsquo;t need to make sense yet.</p>
-
-              <BrainDumpForm onSubmit={handleSubmit} />
+        {brainProcess === 'await' && (
+          <div className={styles.awaiting}>
+            {createPortal(
+              <div className={styles.orbPortal} aria-hidden="true">
+                <img className={styles.portalOrb} src={orbImage} alt="" />
+              </div>,
+              document.body,
+            )}
+            <h1 className={styles.headline}>Add your thougnts</h1>
+            <p className={styles.support}>You can write, paste, upload files or take a photo</p>
+            <BrainDumpForm onSubmit={handleSubmit} />
+          </div>
+          )}
+        {brainProcess === 'processing' && (
+          <>
+            <div className={styles.orbSlot}>
+              <PearlOrb className={styles.orb} isTurning={brainProcess === 'processing'} />
             </div>
-        )}
-        {
-          brainProcess === 'thinking' && (<BrainDumpThinking fallback={handleFallback}/>)
+            <BrainDumpThinking fallback={handleFallback}/>
+          </>)
         }
+        {brainProcess === 'done' && (<BrainDumpDone />)}
       </div>
     </section>
   )

@@ -5,6 +5,8 @@
 }
 
 .column {
+  position: relative;
+  z-index: 11;
   width: 100%;
   max-width: var(--column-mob-width);
   margin: 0 auto;
@@ -15,6 +17,36 @@
   text-align: center;
   height: 100%;
 
+}
+
+.awaiting {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: clamp(0.75rem, 2.5vh, 1.75rem);
+}
+
+.orbPortal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: 100%;
+  height: clamp(5rem, 22vw, 10rem);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.portalOrb {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: clamp(10rem, 42vw, 20rem);
+  height: auto;
+  transform: translate(-50%, -50%);
 }
 
 .orbSlot {
@@ -35,6 +67,8 @@
 }
 
 .headline {
+  position: relative;
+  z-index: 12;
   font-size: clamp(1.35rem, 5.5vw, 2.5rem);
   font-weight: 300;
   line-height: 1.15;
@@ -45,10 +79,15 @@
 }
 
 .support {
+  position: relative;
+  z-index: 12;
   max-width: 34ch;
-  font-size: 1.0625rem;
-  color: var(--text);
-  text-shadow: 0 1px 24px rgb(74 54 98 / 30%);
+  font-weight: 400;
+  font-style: Regular;
+  font-size: 12px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  text-align: center;
 }
 
 .acknowledgement {
@@ -82,6 +121,8 @@
 }
 
 .hero {
+  position: relative;
+  z-index: 3;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -95,27 +136,6 @@
   filter: drop-shadow(0 28px 42px rgb(134 85 214 / 22%));
 }
 
-/*
- * In-orb type. The question takes the orb's dark, warm style rather than the
- * white headline style used outside the ball; the values match the landing
- * screen so both balls read the same way.
- */
-.orbTitle {
-  max-width: 10ch;
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: clamp(1.75rem, 5vw, 3.35rem);
-  font-weight: 700;
-  line-height: 1.02;
-  color: #241656;
-}
-
-.orbText {
-  max-width: 22ch;
-  font-size: clamp(0.78rem, 1.65vw, 1.08rem);
-  font-weight: 600;
-  line-height: 1.35;
-  color: rgb(36 22 86 / 82%);
-}
 
 @keyframes hero-settle {
   from {

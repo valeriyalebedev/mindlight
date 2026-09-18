@@ -26,60 +26,37 @@
 .textarea {
   width: 100%;
   height: clamp(5rem, 18vh, 10.5rem);
-  min-height: 0;
-  padding: 1.15rem 1.35rem;
+  min-height: 100px;
   font-size: 1.0625rem;
   line-height: 1.6;
   color: var(--text);
-  background: var(--field);
-  border: 1px solid var(--glass-border);
-  border-radius: 1.5rem;
-  backdrop-filter: blur(20px) saturate(150%);
-  -webkit-backdrop-filter: blur(20px) saturate(150%);
-  resize: vertical;
-  transition: border-color 160ms ease;
+  border-radius: 16px;
+  resize: none;
+
+  padding-top: 20px;
+  padding-right: 24px;
+  padding-bottom: 20px;
+  padding-left: 24px;
+  opacity: 1;
+
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  @media(min-width: 1024px) {
+    width: 404px;
+    height: 404px;
+  }
 }
 
 .textarea::placeholder {
-  color: var(--text-placeholder);
+  color: #7A206066;
 }
 
 .textarea:focus-visible {
-  outline: 2px solid var(--text);
-  outline-offset: 2px;
-}
-
-.button {
-  width: max-content;
-  max-width: 100%;
-  flex: 0 0 auto;
-  padding: min(2.5rem, 10px) min(2.5rem, 15px);
-  font-size: 1.0625rem;
-  font-weight: 400;
-  white-space: nowrap;
-  color: var(--text);
-  background: var(--glass-strong);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--pill);
-  backdrop-filter: blur(18px) saturate(150%);
-  -webkit-backdrop-filter: blur(18px) saturate(150%);
-  transition: background-color 160ms ease;
-}
-
-.button:hover:not(:disabled) {
-  background: rgb(255 255 255 / 22%);
-}
-
-.button:focus-visible {
-  outline: 2px solid var(--text);
-  outline-offset: 3px;
-}
-
-.button:disabled {
-  color: rgb(255 255 255 / 65%);
-  background: rgb(255 255 255 / 12%);
-  border-color: rgb(255 255 255 / 32%);
-  cursor: not-allowed;
+  outline: 1px solid #FFFFFF40;
+  box-shadow: 0px -3px 6px 0px #FFFFFFB2 inset;
 }
 
 .addFilesBtn {
@@ -123,35 +100,8 @@
     font-size: 0.9rem;
     line-height: 1.4;
   }
-
-  .button {
-    padding-block: 0.55rem;
-    font-size: 0.9rem;
-  }
 }
 
-@media (min-width: 1024px) {
-  .form {
-    flex-direction: row;
-    align-items: center;
-  }
-
-  .textarea {
-    width: auto;
-    flex: 1 1 auto;
-    min-width: 0;
-  }
-
-  .button {
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    z-index: 2;
-  }
-
-  .addFilesBtn {
-    right: 136px;
-    top: 10px;
-    z-index: 3;
-  }
+.form button {
+  width: 404px;
 }
