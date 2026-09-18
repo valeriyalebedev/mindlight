@@ -5,6 +5,7 @@ type PearlOrbProps = {
   children?: ReactNode
   className?: string
   size?: string
+  isTurning?: boolean
 }
 
 /**
@@ -13,7 +14,7 @@ type PearlOrbProps = {
  * Decorative by default: the layered gradients create the pearly depth without
  * adding semantic noise for screen readers.
  */
-function PearlOrb({ children, className, size }: PearlOrbProps) {
+function PearlOrb({ children, className, size, isTurning }: PearlOrbProps) {
   const style = size ? ({ '--pearl-orb-size': size } as CSSProperties) : undefined
   const classNames = className ? `${styles.wrap} ${className}` : styles.wrap
 
@@ -24,6 +25,7 @@ function PearlOrb({ children, className, size }: PearlOrbProps) {
         <span className={styles.base} />
         <span className={styles.spiral} />
         <span className={styles.spiralAlt} />
+        <span className={styles.miricle} data-turning={isTurning}/>
         <span className={styles.core} />
         <span className={styles.sparkles} />
       </span>

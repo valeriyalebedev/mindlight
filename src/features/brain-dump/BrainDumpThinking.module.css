@@ -1,0 +1,183 @@
+.brainDumpThinking {
+  width: 100%;
+  padding: 32px 24px 28px;
+  overflow: hidden;
+}
+
+.brainDumpThinking ul {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+
+  @media (min-width: 1024px) {
+    flex-direction: row;
+  }
+}
+
+.brainDumpThinking li {
+  position: relative;
+
+  flex: 1;
+  min-width: 0;
+
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.0625rem;
+  line-height: 1.2;
+  text-align: center;
+
+  /* desktop */
+  padding-top: 25px;
+}
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 1023px) {
+  .brainDumpThinking {
+    padding: 31px 24px 28px;
+  }
+
+  .brainDumpThinking ul {
+    width: 100%;
+  }
+
+  .brainDumpThinking li {
+    flex: none;
+
+    width: 100%;
+    height: 82px;
+
+    box-sizing: border-box;
+
+    padding: 0 0 0 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    text-align: left;
+  }
+
+  /* Кружок */
+  .brainDumpThinking li::before {
+    content: "";
+
+    position: absolute;
+    z-index: 2;
+
+    top: 50%;
+    left: 0;
+
+    width: 24px;
+    height: 24px;
+
+    box-sizing: border-box;
+
+    border: 4px solid rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+
+    background: transparent;
+
+    transform: translateY(-50%);
+  }
+
+  /* Вертикальная линия */
+  .brainDumpThinking li:not(:last-child)::after {
+    content: "";
+
+    position: absolute;
+    z-index: 1;
+
+    top: calc(50% + 12px);
+    left: 10px;
+
+    width: 4px;
+    height: calc(100% - 24px);
+
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  /* Завершенный шаг */
+  .brainDumpThinking li[data-completed="true"] {
+    color: #fff;
+  }
+
+  .brainDumpThinking li[data-completed="true"]::before {
+    width: 24px;
+    height: 24px;
+
+    border: none;
+
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 0.5C18.3513 0.5 23.5 5.64873 23.5 12C23.5 18.3513 18.3513 23.5 12 23.5C5.64873 23.5 0.5 18.3513 0.5 12C0.5 5.64873 5.64873 0.5 12 0.5Z" fill="white"/><path d="M12 0.5C18.3513 0.5 23.5 5.64873 23.5 12C23.5 18.3513 18.3513 23.5 12 23.5C5.64873 23.5 0.5 18.3513 0.5 12C0.5 5.64873 5.64873 0.5 12 0.5Z" stroke="white"/><path d="M18 8L10 16L6 12" stroke="%23F9B2DD" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  .brainDumpThinking li[data-completed="true"]::after {
+    background: rgba(255, 255, 255, 0.9);
+  }
+}
+
+/* =========================================
+   DESKTOP
+   ========================================= */
+
+@media (min-width: 1024px) {
+  /* Кружок */
+  .brainDumpThinking li::before {
+    content: "";
+
+    position: absolute;
+    z-index: 2;
+
+    top: 0;
+    left: 50%;
+
+    width: 20px;
+    height: 20px;
+
+    box-sizing: border-box;
+
+    border: 4px solid rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+
+    background: transparent;
+
+    transform: translate(-50%, -20%);
+  }
+
+  /* Линия */
+  .brainDumpThinking li:not(:last-child)::after {
+    content: "";
+
+    position: absolute;
+    z-index: 1;
+
+    top: 5px;
+    left: 55%;
+
+    width: 90%;
+    height: 2px;
+
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  .brainDumpThinking li[data-completed="true"]::before {
+    border-color: #fff;
+    background: #fff;
+
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 0.5C13.6944 0.5 17.5 4.30558 17.5 9C17.5 13.6944 13.6944 17.5 9 17.5C4.30558 17.5 0.5 13.6944 0.5 9C0.5 4.30558 4.30558 0.5 9 0.5Z" fill="white"/><path d="M9 0.5C13.6944 0.5 17.5 4.30558 17.5 9C17.5 13.6944 13.5 17.5 9 17.5C4.30558 17.5 0.5 13.6944 0.5 9C0.5 4.30558 4.30558 0.5 9 0.5Z" stroke="white"/><path d="M14.8972 5.94629L7.36694 13.4766L3.10327 9.21289L4.52319 7.79297L7.36694 10.6367L13.4773 4.52637L14.8972 5.94629Z" fill="%23F9B2DD"/></svg>');
+
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+}

@@ -1,7 +1,9 @@
-import PearlOrb from '../../components/PearlOrb'
-import type { BrainDump } from '../../types/mindlight'
-import BrainDumpForm from './BrainDumpForm'
-import styles from './BrainDumpScreen.module.css'
+import { useState } from 'react';
+import PearlOrb from '../../components/PearlOrb';
+import type { BrainDump } from '../../types/mindlight';
+import BrainDumpForm from './BrainDumpForm';
+import BrainDumpThinking from './BrainDumpThinking';
+import styles from './BrainDumpScreen.module.css';
 
 type BrainDumpScreenProps = {
   /** Receives the brain dump of the current session, trimmed. */
@@ -16,29 +18,40 @@ type BrainDumpScreenProps = {
  * The copy asks the question, the form is the only interaction, and nothing is
  * required of the user beyond writing.
  */
-function BrainDumpScreen({ onSubmit, submittedBrainDump }: BrainDumpScreenProps) {
+function BrainDumpScreen({ onSubmit }: BrainDumpScreenProps) {
+  const [brainProcess, setBrainProcess] = useState<'await' | 'thinking' | 'done'>('await')
   function handleSubmit(text: string) {
     onSubmit?.({
       text,
       createdAt: new Date().toISOString(),
     })
+    setBrainProcess('thinking')
+  }
+
+  function handleFallback() {
+    setBrainProcess('done')
+    setTimeout(() => setBrainProcess('await'), 5500)
   }
 
   return (
     <section className={styles.screen}>
       <div className={styles.column}>
-        <PearlOrb />
+        <div className={styles.orbSlot}>
+          <PearlOrb className={styles.orb} isTurning={brainProcess === 'thinking'} />
+        </div>
 
-        <h1 className={styles.headline}>What&rsquo;s taking up space in your head?</h1>
-        <p className={styles.support}>Put it here. It doesn&rsquo;t need to make sense yet.</p>
+        {
+          brainProcess === 'await' && (
+            <div>
+              <h1 className={styles.headline}>What&rsquo;s taking up space in your head?</h1>
+              <p className={styles.support}>Put it here. It doesn&rsquo;t need to make sense yet.</p>
 
-        <BrainDumpForm onSubmit={handleSubmit} />
-
-        {submittedBrainDump ? (
-          <p className={styles.acknowledgement} role="status">
-            It&rsquo;s out of your head. For now, that&rsquo;s enough.
-          </p>
-        ) : null}
+              <BrainDumpForm onSubmit={handleSubmit} />
+            </div>
+        )}
+        {
+          brainProcess === 'thinking' && (<BrainDumpThinking fallback={handleFallback}/>)
+        }
       </div>
     </section>
   )
