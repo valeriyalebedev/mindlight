@@ -1,31 +1,63 @@
-import PearlOrb from '../../components/PearlOrb'
-import styles from './LandingScreen.module.css'
+import PearlOrb from '../../components/PearlOrb';
+import styles from './LandingScreen.module.css';
+import MainButton from '../../components/Button';
 
 type LandingScreenProps = {
-  /** Leaves the entry screen and opens the brain dump flow. */
-  onGetStarted: () => void
+  /** Receives the brain dump of the current session, trimmed. */
+  onClickTyping: () => void
+  onClickAsking: () => void
 }
 
-function LandingScreen({ onGetStarted }: LandingScreenProps) {
+/**
+ * Step 3 of the flow: "I don't need to organize my thoughts first."
+ *
+ * The question and the prompt sit inside the ball, so it stays the centre of the
+ * screen. The form stays outside the ball and below it, where it can be typed
+ * in - the orb's content layer is not interactive.
+ */
+function LandingScreen({ onClickTyping,  onClickAsking }: LandingScreenProps) {
+
   return (
     <section className={styles.hero}>
-      <h1 className={styles.headline}>
-        Less in your head.
-        More in your life.
-      </h1>
-
-      <PearlOrb className={styles.orb} size="clamp(600px, 85vw, 400px)">
-        <span className={styles.orbTitle}>What&rsquo;s on your mind?</span>
-        <span className={styles.orbText}>
-          Drop your thoughts.
-          <br />
-          I&rsquo;ll help you find the next step.
-        </span>
-      </PearlOrb>
-
-      <button type="button" className={styles.cta} onClick={onGetStarted}>
-        Get started
-      </button>
+      <div className={styles.column}>
+        <div className={styles.orbSlot}>
+          <PearlOrb className={styles.orb} />
+          <h1 className={styles.headline}>What&rsquo;s taking up<br/> space in your head?</h1>
+        </div>
+        <p className={styles.support}>Drop your thoughts, files or photos. I’ll help you to find the next step.</p>
+        <div>
+          <div className={styles.buttonWrapper}>
+            <MainButton onClick={onClickTyping} type="button">
+              <span>What is on your mind today?</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M16.875 7.875H10.125V1.125C10.125 0.503684 9.62132 0 9 0C8.37868 0 7.875 0.503684 7.875 1.125V7.875H1.125C0.503684 7.875 0 8.37868 0 9C0 9.62132 0.503684 10.125 1.125 10.125H7.875V16.875C7.875 17.4963 8.37868 18 9 18C9.62132 18 10.125 17.4963 10.125 16.875V10.125H16.875C17.4963 10.125 18 9.62132 18 9C18 8.37868 17.4963 7.875 16.875 7.875Z" fill="#7A2060"/>
+              </svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <g clip-path="url(#clip0_154_2442)">
+                  <path d="M9 15C10.5908 14.9982 12.1158 14.3655 13.2407 13.2407C14.3655 12.1158 14.9982 10.5908 15 9V6C15 4.4087 14.3679 2.88258 13.2426 1.75736C12.1174 0.632141 10.5913 0 9 0C7.4087 0 5.88258 0.632141 4.75736 1.75736C3.63214 2.88258 3 4.4087 3 6V9C3.00179 10.5908 3.6345 12.1158 4.75933 13.2407C5.88416 14.3655 7.40925 14.9982 9 15ZM9 1.5C10.0624 1.50197 11.0899 1.8794 11.901 2.5656C12.7121 3.2518 13.2545 4.20259 13.4325 5.25H11.25C11.0511 5.25 10.8603 5.32902 10.7197 5.46967C10.579 5.61032 10.5 5.80109 10.5 6C10.5 6.19891 10.579 6.38968 10.7197 6.53033C10.8603 6.67098 11.0511 6.75 11.25 6.75H13.5V8.25H11.25C11.0511 8.25 10.8603 8.32902 10.7197 8.46967C10.579 8.61032 10.5 8.80109 10.5 9C10.5 9.19891 10.579 9.38968 10.7197 9.53033C10.8603 9.67098 11.0511 9.75 11.25 9.75H13.4325C13.2562 10.7981 12.7142 11.7499 11.9028 12.4363C11.0913 13.1227 10.0628 13.4993 9 13.4993C7.93716 13.4993 6.90871 13.1227 6.09723 12.4363C5.28576 11.7499 4.74377 10.7981 4.5675 9.75H6.75C6.94891 9.75 7.13968 9.67098 7.28033 9.53033C7.42098 9.38968 7.5 9.19891 7.5 9C7.5 8.80109 7.42098 8.61032 7.28033 8.46967C7.13968 8.32902 6.94891 8.25 6.75 8.25H4.5V6.75H6.75C6.94891 6.75 7.13968 6.67098 7.28033 6.53033C7.42098 6.38968 7.5 6.19891 7.5 6C7.5 5.80109 7.42098 5.61032 7.28033 5.46967C7.13968 5.32902 6.94891 5.25 6.75 5.25H4.5675C4.74545 4.20259 5.28789 3.2518 6.09898 2.5656C6.91006 1.8794 7.93759 1.50197 9 1.5Z" fill="#7A2060"/>
+                  <path d="M17.25 9C17.0511 9 16.8603 9.07902 16.7197 9.21967C16.579 9.36032 16.5 9.55109 16.5 9.75C16.498 11.5396 15.7862 13.2553 14.5208 14.5208C13.2553 15.7862 11.5396 16.498 9.75 16.5H8.25C6.46046 16.4978 4.74484 15.786 3.47944 14.5206C2.21404 13.2552 1.50218 11.5395 1.5 9.75C1.5 9.55109 1.42098 9.36032 1.28033 9.21967C1.13968 9.07902 0.948912 9 0.75 9C0.551088 9 0.360322 9.07902 0.21967 9.21967C0.0790176 9.36032 0 9.55109 0 9.75C0.00258035 11.9372 0.872603 14.0342 2.41922 15.5808C3.96584 17.1274 6.06276 17.9974 8.25 18H9.75C11.9372 17.9974 14.0342 17.1274 15.5808 15.5808C17.1274 14.0342 17.9974 11.9372 18 9.75C18 9.55109 17.921 9.36032 17.7803 9.21967C17.6397 9.07902 17.4489 9 17.25 9Z" fill="#7A2060"/>
+                </g>
+                <defs>
+                  <clipPath id="clip0_154_2442">
+                    <rect width="18" height="18" fill="#7A2060"/>
+                  </clipPath>
+                </defs>
+              </svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <g clip-path="url(#clip0_154_2443)">
+                  <path d="M17.3392 0.661541C17.0703 0.389387 16.7358 0.191182 16.3679 0.0860783C16 -0.0190259 15.6113 -0.0274771 15.2392 0.061541L3.2392 2.58904C2.54813 2.68382 1.89725 2.96965 1.35985 3.41435C0.82245 3.85905 0.419881 4.44496 0.197478 5.10609C-0.0249258 5.76722 -0.0583304 6.47731 0.101026 7.1564C0.260382 7.83549 0.606169 8.4566 1.09945 8.94979L2.38795 10.2375C2.45768 10.3073 2.51299 10.39 2.5507 10.4812C2.5884 10.5723 2.60777 10.6699 2.6077 10.7685V13.1445C2.60935 13.4786 2.68626 13.808 2.8327 14.1083L2.8267 14.1135L2.8462 14.133C3.06596 14.5749 3.42488 14.9322 3.8677 15.15L3.8872 15.1695L3.89245 15.1635C4.19272 15.31 4.52212 15.3869 4.8562 15.3885H7.2322C7.43098 15.3884 7.62171 15.4672 7.76245 15.6075L9.0502 16.8953C9.39559 17.2445 9.80668 17.5219 10.2598 17.7115C10.7129 17.9011 11.199 17.9992 11.6902 18C12.0995 17.9995 12.506 17.9327 12.8939 17.802C13.549 17.5869 14.131 17.1931 14.5741 16.6648C15.0173 16.1366 15.304 15.495 15.4019 14.8125L17.9332 2.78629C18.0268 2.41102 18.0213 2.01786 17.9172 1.64536C17.813 1.27287 17.6139 0.933843 17.3392 0.661541ZM3.44995 9.17854L2.1607 7.89079C1.86049 7.59781 1.65008 7.22528 1.55416 6.81691C1.45825 6.40854 1.48081 5.98129 1.6192 5.58529C1.75337 5.17903 2.0014 4.81986 2.33379 4.55049C2.66619 4.28112 3.06896 4.11288 3.4942 4.06579L15.3749 1.56454L4.1062 12.8348V10.7685C4.10733 10.4733 4.04992 10.1807 3.93728 9.90783C3.82463 9.63491 3.659 9.38704 3.44995 9.17854ZM13.9282 14.556C13.8706 14.9703 13.6987 15.3603 13.4318 15.6823C13.1648 16.0042 12.8134 16.2454 12.417 16.3788C12.0206 16.5122 11.5949 16.5324 11.1876 16.4372C10.7804 16.3421 10.4077 16.1353 10.1114 15.84L8.82145 14.55C8.61322 14.3407 8.36555 14.1747 8.09276 14.0616C7.81997 13.9486 7.52748 13.8908 7.2322 13.8915H5.16595L16.4362 2.62504L13.9282 14.556Z" fill="#7A2060"/>
+                </g>
+                <defs>
+                  <clipPath id="clip0_154_2443">
+                    <rect width="18" height="18" fill="#7A2060"/>
+                  </clipPath>
+                </defs>
+              </svg>
+            </MainButton>
+            <MainButton onClick={onClickAsking} type="button">Ask Mindlignt</MainButton>
+          </div>
+          </div>
+      </div>
     </section>
   )
 }

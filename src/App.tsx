@@ -1,15 +1,16 @@
-import { useCallback, useEffect, useState } from 'react'
-import type { ReactNode } from 'react'
-import AnimatedBackground from './components/AnimatedBackground'
-import GlassNav from './components/GlassNav'
-import AfterDoneScreen from './features/after-done/AfterDoneScreen'
-import BrainDumpScreen from './features/brain-dump/BrainDumpScreen'
-import LandingScreen from './features/landing/LandingScreen'
-import NextMoveScreen from './features/next-move/NextMoveScreen'
-import ProcessingScreen from './features/next-move/ProcessingScreen'
-import { createStubNextMove } from './lib/stubNextMove'
-import type { BrainDump, MindlightSession, UserChoice } from './types/mindlight'
-import styles from './App.module.css'
+import { useCallback, useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
+import Loader from './components/Loader';
+import AfterDoneScreen from './features/after-done/AfterDoneScreen';
+import BrainDumpScreen from './features/brain-dump/BrainDumpScreen';
+import LandingScreen from './features/landing/LandingScreen';
+import Welcoming from './features/welcoming/WelcomingScreen';
+import NextMoveScreen from './features/next-move/NextMoveScreen';
+import ProcessingScreen from './features/next-move/ProcessingScreen';
+import { createStubNextMove } from './lib/stubNextMove';
+import type { BrainDump, MindlightSession, UserChoice } from './types/mindlight';
+import backgroundImage from './static/baclground.webp';
+import styles from './App.module.css';
 
 /**
  * Which step of the flow is on screen.
@@ -17,7 +18,7 @@ import styles from './App.module.css'
  * This is never stored. It is always derived from the session, so the session
  * stays the single source of truth and no screen can drift out of sync with it.
  */
-type ScreenName = 'landing' | 'brain-dump' | 'processing' | 'next-move' | 'after-done'
+type ScreenName = 'welcoming' | 'landing' |'brain-dump' | 'next-move' | 'after-done'
 
 /**
  * How long the processing beat lasts before the next move appears.
@@ -26,7 +27,6 @@ type ScreenName = 'landing' | 'brain-dump' | 'processing' | 'next-move' | 'after
  * rather than a flicker. When the LLM integration lands, this timer is replaced
  * by the actual work and nothing else in the flow has to change.
  */
-const PROCESSING_MS = 2200
 
 function createSession(): MindlightSession {
   return {
@@ -44,19 +44,19 @@ function resolveScreen(session: MindlightSession): ScreenName {
   }
 
   switch (session.processingState) {
-    case 'capturing':
+    case 'adding':
       return 'brain-dump'
-    case 'processing':
-      return 'processing'
+    case 'capturing':
+      return 'landing'
     case 'ready':
       // "ready" without a move should not happen; treat it as still working.
-      return session.nextMove ? 'next-move' : 'processing'
+      return session.nextMove ? 'next-move' : 'landing'
     case 'error':
       // Processing failed: put the user back at their dump so they can retry.
       // A dedicated error step arrives with the LLM integration.
-      return 'brain-dump'
-    default:
       return 'landing'
+    default:
+      return 'welcoming'
   }
 }
 
@@ -72,38 +72,71 @@ function resolveScreen(session: MindlightSession): ScreenName {
  */
 function App() {
   const [session, setSession] = useState<MindlightSession>(createSession)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const startedAt = performance.now()
+    let minimumLoadTimer: ReturnType<typeof setTimeout> | undefined
+
+    const finishLoading = () => {
+      minimumLoadTimer = setTimeout(() => {
+        setIsLoading(false)
+      }, Math.max(0, 5000 - (performance.now() - startedAt)))
+    }
+
+    if (document.readyState === 'complete') {
+      finishLoading()
+    } else {
+      window.addEventListener('load', finishLoading, { once: true })
+    }
+
+    return () => {
+      window.removeEventListener('load', finishLoading)
+      if (minimumLoadTimer) {
+        clearTimeout(minimumLoadTimer)
+      }
+    }
+  }, [])
 
   /*
    * The processing beat, owned here rather than inside the screen so the screens
    * stay presentational. It moves the flow from processing to the next move once
    * the pause has passed.
    */
-  useEffect(() => {
-    if (session.processingState !== 'processing') {
-      return
-    }
-
-    const timer = window.setTimeout(() => {
-      setSession((current) => {
-        // The user may have moved on while we were "thinking".
-        if (current.processingState !== 'processing' || !current.brainDump) {
-          return current
-        }
-
-        return {
-          ...current,
-          processingState: 'ready',
-          nextMove: createStubNextMove(current.brainDump, current.nextMove?.title),
-        }
-      })
-    }, PROCESSING_MS)
-
-    return () => window.clearTimeout(timer)
-  }, [session.processingState, session.brainDump])
 
   /** Leave the entry screen and start writing. */
   const handleGetStarted = useCallback(() => {
     setSession((current) => ({ ...current, processingState: 'capturing' }))
+  }, [])
+
+  /** Landing -> open the free-form brain dump screen. */
+  const handleTyping = useCallback(() => {
+    setSession((current) => ({
+      ...current,
+      processingState: 'adding',
+      nextMove: undefined,
+      userChoice: undefined,
+      errorMessage: undefined,
+    }))
+  }, [])
+
+  /** Landing -> open a next move directly until the real assistant is connected. */
+  const handleAsking = useCallback(() => {
+    setSession((current) => {
+      const brainDump = current.brainDump ?? {
+        text: '',
+        createdAt: new Date().toISOString(),
+      }
+
+      return {
+        ...current,
+        brainDump,
+        nextMove: createStubNextMove(brainDump, current.nextMove?.title),
+        userChoice: undefined,
+        processingState: 'ready',
+        errorMessage: undefined,
+      }
+    })
   }, [])
 
   /** The dump is in: processing begins. */
@@ -114,8 +147,26 @@ function App() {
       nextMove: undefined,
       userChoice: undefined,
       errorMessage: undefined,
-      processingState: 'processing',
     }))
+  }, [])
+
+  /** Brain dump processing finished: show the generated next move. */
+  const handleBrainDumpFallback = useCallback(() => {
+    setSession((current) => {
+      const brainDump = current.brainDump ?? {
+        text: '',
+        createdAt: new Date().toISOString(),
+      }
+
+      return {
+        ...current,
+        brainDump,
+        nextMove: createStubNextMove(brainDump, current.nextMove?.title),
+        userChoice: undefined,
+        processingState: 'ready',
+        errorMessage: undefined,
+      }
+    })
   }, [])
 
   /** What the user decided about the next move. */
@@ -149,24 +200,23 @@ function App() {
     }))
   }, [])
 
+  let content: ReactNode
+
   switch (resolveScreen(session)) {
     case 'brain-dump':
-      return (
+      content = (
         <Shell>
           <BrainDumpScreen
             onSubmit={handleBrainDumpSubmit}
+            onFallback={handleBrainDumpFallback}
             submittedBrainDump={session.brainDump ?? null}
           />
         </Shell>
       )
-    case 'processing':
-      return (
-        <Shell>
-          <ProcessingScreen />
-        </Shell>
-      )
+      break
+
     case 'next-move':
-      return (
+      content = (
         <Shell>
           {session.nextMove ? (
             <NextMoveScreen nextMove={session.nextMove} onChoose={handleChoose} />
@@ -175,19 +225,35 @@ function App() {
           )}
         </Shell>
       )
+      break
     case 'after-done':
-      return (
+      content = (
         <Shell>
           <AfterDoneScreen nextMove={session.nextMove} onStartAgain={handleStartAgain} />
         </Shell>
       )
-    default:
-      return (
+      break
+    case 'landing': 
+      content = (
         <Shell>
-          <LandingScreen onGetStarted={handleGetStarted} />
+          <LandingScreen onClickTyping={handleTyping}  onClickAsking={handleAsking} />
+        </Shell>
+      )
+      break
+    default:
+      content = (
+        <Shell>
+          <Welcoming onGetStarted={handleGetStarted} />
         </Shell>
       )
   }
+
+  return (
+    <>
+      {content}
+      {isLoading && <Loader />}
+    </>
+  )
 }
 
 /**
@@ -197,12 +263,10 @@ function App() {
 function Shell({ children }: { children: ReactNode }) {
   return (
     <>
-      <AnimatedBackground />
-
-      <div className={styles.app}>
-        <GlassNav />
+      <div className={styles.app} style={{ backgroundImage: `url(${backgroundImage})` }}>
 
         <main className={styles.main}>{children}</main>
+        
       </div>
     </>
   )

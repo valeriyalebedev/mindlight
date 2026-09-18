@@ -1,5 +1,6 @@
-import { useId, useState } from 'react'
+import { useId, useRef, useState } from 'react'
 import type { ChangeEvent, FormEvent, KeyboardEvent } from 'react'
+import  MainButton from '../../components/Button'
 import styles from './BrainDumpForm.module.css'
 
 type BrainDumpFormProps = {
@@ -16,6 +17,7 @@ type BrainDumpFormProps = {
 function BrainDumpForm({ onSubmit }: BrainDumpFormProps) {
   const [text, setText] = useState('')
   const textareaId = useId()
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const trimmedText = text.trim()
   const canSubmit = trimmedText.length > 0
@@ -43,6 +45,8 @@ function BrainDumpForm({ onSubmit }: BrainDumpFormProps) {
     }
   }
 
+
+
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
       <label className={styles.label} htmlFor={textareaId}>
@@ -55,12 +59,19 @@ function BrainDumpForm({ onSubmit }: BrainDumpFormProps) {
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         rows={7}
-        placeholder="Start anywhere. Messy is fine."
         aria-keyshortcuts="Meta+Enter Control+Enter"
+        placeholder="Start typing your thoughts..."
       />
-      <button className={styles.button} type="submit" disabled={!canSubmit}>
+      <input
+        ref={fileInputRef}
+        className={styles.fileInput}
+        type="file"
+        multiple
+        tabIndex={-1}
+      />
+      <MainButton type="submit" disabled={!canSubmit}>
         Let it out
-      </button>
+      </MainButton>
     </form>
   )
 }

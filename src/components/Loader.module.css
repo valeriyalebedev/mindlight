@@ -1,0 +1,80 @@
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 100svh;
+  min-height: 100dvh;
+  overflow: hidden;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-height: 100%;
+  padding: 1.5rem;
+  gap: clamp(1rem, 3vh, 2.5rem);
+}
+
+.text {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  color: #7A2060;
+  font-size: clamp(1rem, 2.4vw, 1.35rem);
+  font-weight: 500;
+  font-style: Medium;
+
+  line-height: 100%;
+  letter-spacing: 0%;
+  text-align: center;
+
+  text-shadow: 0 2px 18px rgb(74 54 98 / 42%);
+  animation: breathe 1.8s ease-in-out infinite;
+
+  @media (min-width: 1024px) {
+    font-size: 42px;
+    line-height: 1;
+  }
+}
+
+.orb {
+  position: absolute;
+  z-index: 0;
+  top: 50%;
+  left: 50%;
+  width: min(68vw, 628px);
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+
+  @media(min-width: 1024px;) {
+    min-width: 628px;
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.65;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text {
+    animation: none;
+  }
+}

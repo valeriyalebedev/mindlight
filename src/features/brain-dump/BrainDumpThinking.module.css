@@ -1,0 +1,186 @@
+.brainDumpThinking {
+  width: 100%;
+  padding: 32px 24px 28px;
+  overflow: hidden;
+}
+
+.brainDumpThinking ul {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+
+  @media (min-width: 1024px) {
+    flex-direction: row;
+  }
+}
+
+.brainDumpThinking li {
+  position: relative;
+
+  flex: 1;
+  min-width: 0;
+
+  color: #7A2060;
+  font-size: 1.0625rem;
+  line-height: 1.2;
+  text-align: center;
+
+  /* desktop */
+  padding-top: 25px;
+}
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 1023px) {
+  .brainDumpThinking {
+    padding: 31px 24px 28px;
+  }
+
+  .brainDumpThinking ul {
+    width: 100%;
+  }
+
+  .brainDumpThinking li {
+    flex: none;
+
+    width: 100%;
+    height: 82px;
+
+    box-sizing: border-box;
+
+    padding: 0 0 0 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    text-align: left;
+  }
+
+  /* Кружок */
+  .brainDumpThinking li::before {
+    content: "";
+
+    position: absolute;
+    z-index: 2;
+
+    top: 50%;
+    left: 0;
+
+    width: 24px;
+    height: 24px;
+
+    box-sizing: border-box;
+
+    border: 4px solid #7A2060;
+    border-radius: 50%;
+
+    background: transparent;
+
+    transform: translateY(-50%);
+  }
+
+  /* Вертикальная линия */
+  .brainDumpThinking li:not(:last-child)::after {
+    content: "";
+
+    position: absolute;
+    z-index: 1;
+
+    top: calc(50% + 12px);
+    left: 10px;
+
+    width: 3px;
+    height: calc(100% - 24px);
+
+    background: #7A2060;
+  }
+
+  /* Завершенный шаг */
+  .brainDumpThinking li[data-completed="true"] {
+    color: #7A2060;
+  }
+
+  .brainDumpThinking li[data-completed="true"]::before {
+    width: 24px;
+    height: 24px;
+
+    border: none;
+
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 0.5C18.3513 0.5 23.5 5.64873 23.5 12C23.5 18.3513 18.3513 23.5 12 23.5C5.64873 23.5 0.5 18.3513 0.5 12C0.5 5.64873 5.64873 0.5 12 0.5Z" fill="white"/><path d="M12 0.5C18.3513 0.5 23.5 5.64873 23.5 12C23.5 18.3513 18.3513 23.5 12 23.5C5.64873 23.5 0.5 18.3513 0.5 12C0.5 5.64873 5.64873 0.5 12 0.5Z" stroke="white"/><path d="M18 8L10 16L6 12" stroke="%23F9B2DD" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  .brainDumpThinking li[data-completed="true"]::after {
+    background: #7A2060;
+    opacity: 0.9;
+  }
+}
+
+/* =========================================
+   DESKTOP
+   ========================================= */
+
+@media (min-width: 1024px) {
+  /* Кружок */
+  .brainDumpThinking li::before {
+    content: "";
+
+    position: absolute;
+    z-index: 2;
+
+    top: 0;
+    left: 50%;
+
+    width: 20px;
+    height: 20px;
+
+    box-sizing: border-box;
+
+    border: 4px solid #7A2060;
+    border-radius: 50%;
+
+    background: transparent;
+
+    transform: translate(-50%, -20%);
+  }
+
+  /* Линия */
+  .brainDumpThinking li:not(:last-child)::after {
+    content: "";
+
+    position: absolute;
+    z-index: 1;
+
+    top: 5px;
+    left: 55%;
+
+    width: 90%;
+    height: 2px;
+
+    background: #7A2060;
+    opacity: 0.9;
+  }
+
+  .brainDumpThinking li[data-completed="true"]::before {
+    border-color: #7A2060;
+    background: #7A2060;
+
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M11.6128 0.644836C17.67 0.644836 22.5804 5.55544 22.5806 11.6126C22.5806 17.6699 17.6701 22.5804 11.6128 22.5804C5.55562 22.5802 0.64502 17.6698 0.64502 11.6126C0.64519 5.55554 5.55573 0.645006 11.6128 0.644836Z" fill="%237A2060"/><path d="M11.6128 0.644836C17.67 0.644836 22.5804 5.55544 22.5806 11.6126C22.5806 17.6699 17.6701 22.5804 11.6128 22.5804C5.55562 22.5802 0.64502 17.6698 0.64502 11.6126C0.64519 5.55554 5.55573 0.645006 11.6128 0.644836Z" stroke="%237A2060" stroke-width="1.29032"/><path d="M19.2224 7.67261L9.50591 17.3891L4.00439 11.8876L5.83655 10.0554L9.50591 13.7248L17.3902 5.84045L19.2224 7.67261Z" fill="%23F9B2DD"/></svg>');
+    
+    border: none;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+}

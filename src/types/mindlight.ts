@@ -10,6 +10,7 @@ export type ISODateTimeString = string
 /** Where the brain dump -> next move flow currently stands. */
 export type ProcessingState =
   | 'idle' // nothing captured yet
+  | 'adding' // the user decided to add new task
   | 'capturing' // the user is writing the brain dump
   | 'processing' // a next move is being derived from the brain dump
   | 'ready' // a next move is available
