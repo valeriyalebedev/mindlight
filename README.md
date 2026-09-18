@@ -38,7 +38,7 @@ Screens still to build: onboarding, home, history, document view, settings.
   loaded from Google Fonts
 
 No UI framework, state library, router, or backend, and no npm dependencies
-beyond the ones above. Styles are plain CSS and CSS Modules.
+beyond the ones above. Styles are plain CSS and CSS Modules
 
 ## Install
 
