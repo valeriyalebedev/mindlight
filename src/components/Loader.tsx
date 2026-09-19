@@ -1,4 +1,4 @@
-import backgroundImage from '../static/baclground.webp'
+import backgroundImage from '../static/background.webp'
 import orbImage from '../static/Orb.png'
 import styles from './Loader.module.css'
 

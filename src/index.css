@@ -70,6 +70,10 @@ body {
   cursor: default;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
 #root {
   min-height: 100svh;
   min-height: 100dvh;
