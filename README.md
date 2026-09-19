@@ -10,7 +10,6 @@ alternative.
 ## Current MVP goal
 
 Ship the smallest end-to-end loop, entirely in the browser:
-
 1. **Brain dump** - the user types whatever is on their mind.
 2. **Processing** - Mindlight derives one next move from that text.
 3. **One next move** - a single suggestion, never a list.
