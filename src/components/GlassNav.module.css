@@ -5,15 +5,18 @@
 
 .nav {
   width: 200px;
-  margin: 30px auto;
+  margin: 15px auto 20px;
   display: flex;
   justify-content: space-around;
-  border-radius: 8px;
-  width: 200;
+  border-radius: 8px;  
 
   opacity: 1;
   border-radius: 8px;
   background-color: #ffffff2d;
+
+  @media(min-width: 1024px) {
+    margin: 25px auto 30px;
+  }
 }
 
 .wordmark {
@@ -63,25 +66,4 @@
 .icon {
   width: 1.45rem;
   height: 1.45rem;
-}
-
-@media (max-width: 640px) {
-  .header {
-    padding-top: 1rem;
-  }
-
-  .nav {
-    gap: 0.25rem;
-    min-height: 3.5rem;
-    padding: 0.3rem 0.5rem;
-  }
-
-  .iconButton {
-    width: 2.5rem;
-    height: 2.5rem;
-  }
-
-  .wordmark {
-    font-size: 1.05rem;
-  }
 }

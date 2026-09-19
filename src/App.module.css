@@ -25,3 +25,14 @@
     padding-bottom: 30px;
   }
 }
+
+@media (max-width: 1023px) {
+  .app {
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .main {
+    overflow: hidden;
+  }
+}

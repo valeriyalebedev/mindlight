@@ -1,0 +1,171 @@
+.screen {
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+}
+
+.content {
+  width: min(100%, 760px);
+}
+
+.title {
+  margin-bottom: 2rem;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 500;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.creator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 3rem;
+  padding: 0.75rem 1rem;
+}
+
+.creator :global(button) {
+  flex: 0 0 auto;
+}
+
+.desktopQrLink {
+  display: none;
+}
+
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+  background: rgb(74 54 98 / 38%);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.modal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: min(100%, 22rem);
+  padding: 2.5rem 1.5rem 1.5rem;
+  border: 1px solid var(--glass-border);
+  border-radius: 1rem;
+  background: rgb(255 250 242 / 88%);
+  box-shadow: 0 1.5rem 4rem rgb(74 54 98 / 25%);
+}
+
+.modalTitle {
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.qr {
+  width: min(100%, 17rem);
+  height: auto;
+  border-radius: 0.35rem;
+}
+
+.popupQrLink {
+  display: block;
+  border-radius: 0.35rem;
+}
+
+.popupQrLink:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+}
+
+.closeButton {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  color: var(--text);
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.closeButton:hover {
+  background: rgb(122 32 96 / 10%);
+}
+
+.closeButton:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+@media (min-width: 1024px) {
+  .title {
+    margin-bottom: 2.5rem;
+  }
+
+  .list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+
+  .creator {
+    min-height: 13rem;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.9rem;
+    padding: 1.25rem;
+    text-align: center;
+  }
+
+  .creator :global(button) {
+    display: none;
+  }
+
+  .desktopQrLink {
+    display: block;
+    order: 1;
+    width: 8rem;
+    height: 8rem;
+    border-radius: 0.35rem;
+    transition: transform 160ms ease, box-shadow 160ms ease;
+  }
+
+  .desktopQrLink:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgb(74 54 98 / 20%);
+  }
+
+  .desktopQrLink:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 3px;
+  }
+
+  .desktopQr {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: inherit;
+  }
+
+  .creator > span {
+    order: 2;
+  }
+}

@@ -26,8 +26,14 @@
 
 .headingWrapper {
   margin: 0 auto;
-  max-width: 404px;
+  max-width: 490px;
   text-align: center;
+}
+
+.heading {
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 500px;
 }
 
 /*
@@ -51,8 +57,9 @@
 }
 
 .eyebrow {
-  font-size: 0.8125rem;
-  font-weight: 600;
+  margin: 10px;
+  font-size: 16px;
+  font-weight: 400;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #7A2060;
@@ -61,7 +68,7 @@
 .content {
   padding: 10px;
   width: 100%;
-  height: 100%;
+  height: auto;
   gap: 10px;
   opacity: 1;
   border-radius: 8px;
@@ -70,14 +77,14 @@
 
   @media (min-width: 1024px) {
     padding: 20px;
-    width: 404px;
+    width: 490px;
   }
 }
 
 .title {
   margin-bottom: 10px;
-  font-size: clamp(1.5rem, 4vw, 2.25rem);
-  line-height: 1.2;
+  font-size: 18px;
+  line-height: 1.1;
   letter-spacing: -0.015em;
   color: var(--text);
   text-wrap: balance;
@@ -89,14 +96,20 @@
 
   @media (min-width: 1024px) {
     font-size: 24px;
+    line-height: 1.2;
   }
 }
 
 .rationale {
   max-width: 42ch;
-  font-size: 1.0625rem;
-  line-height: 1.6;
+  font-size: 14px;
+  line-height: 1;
   color: #7A2060;
+
+  @media(min-width: 1024px) {
+    font-size: 18px;
+    line-height: 1.1;
+  }
 }
 
 .actions {
@@ -107,14 +120,82 @@
   margin-top: 0.5rem;
 
   @media (min-width: 1024px) {
-    margin-top: 40px;
-    width: 404px;
+    margin-top: 25px;
+    width: 490px;
   }
 }
 
 .actions button {
+  width: fit-content;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    color 180ms ease,
+    transform 120ms ease;
 
   @media (min-width: 1024px) {
     width: fit-content;
+  }
+}
+
+.actions button:hover:not(:disabled),
+.actions[data-feedback='accept'] button:first-child,
+.actions[data-feedback='alternative'] button:nth-child(2),
+.actions[data-feedback='not-now'] button:nth-child(3) {
+  color: #F9B2DD;
+  background: #FFFFFF;
+  border-color: #FFFFFF;
+  box-shadow: 0 4px 14px rgb(122 32 96 / 12%);
+  transform: translateY(-1px);
+}
+
+.doneLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkIcon {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+}
+
+@media (max-width: 1023px) {
+  .screen {
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .headingWrapper {
+    flex: 0 0 auto;
+  }
+
+  .card {
+    flex: 0 1 auto;
+    min-height: 0;
+    margin: auto;
+  }
+}
+
+@media (min-width: 1024px) {
+  .screen {
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .headingWrapper {
+    flex: 0 0 auto;
+  }
+
+  .card {
+    flex: 0 1 auto;
+    min-height: 0;
+    margin: auto;
   }
 }

@@ -24,7 +24,10 @@ function LandingScreen({ onClickTyping,  onClickAsking }: LandingScreenProps) {
           <PearlOrb className={styles.orb} />
           <h1 className={styles.headline}>What&rsquo;s taking up<br/> space in your head?</h1>
         </div>
-        <p className={styles.support}>Drop your thoughts, files or photos. I’ll help you to find the next step.</p>
+        <p className={styles.support}>
+          Drop your thoughts, files or photos.<br /> 
+          I’ll help you to find the next step.
+        </p>
         <div>
           <div className={styles.buttonWrapper}>
             <MainButton onClick={onClickTyping} type="button">

@@ -9,20 +9,22 @@ import styles from './App.module.css';
 import Header from './components/Header';
 import GlassNav from './components/GlassNav';
 
-const MIN_INITIAL_LOADING_TIME = 5000
+const MIN_INITIAL_LOADING_TIME = 3000;
 
-const loadAfterDoneScreen = () => import('./features/after-done/AfterDoneScreen')
-const loadBrainDumpScreen = () => import('./features/brain-dump/BrainDumpScreen')
-const loadLandingScreen = () => import('./features/landing/LandingScreen')
-const loadWelcomingScreen = () => import('./features/welcoming/WelcomingScreen')
-const loadNextMoveScreen = () => import('./features/next-move/NextMoveScreen')
-const loadProcessingScreen = () => import('./features/next-move/ProcessingScreen')
+const loadAfterDoneScreen = () => import('./features/after-done/AfterDoneScreen');
+const loadBrainDumpScreen = () => import('./features/brain-dump/BrainDumpScreen');
+const loadLandingScreen = () => import('./features/landing/LandingScreen');
+const loadWelcomingScreen = () => import('./features/welcoming/WelcomingScreen');
+const loadNextMoveScreen = () => import('./features/next-move/NextMoveScreen');
+const loadProcessingScreen = () => import('./features/next-move/ProcessingScreen');
+const loadCreatorsScreen = () => import('./features/creators/Creators');
 
-const AfterDoneScreen = lazy(loadAfterDoneScreen)
-const BrainDumpScreen = lazy(loadBrainDumpScreen)
-const LandingScreen = lazy(loadLandingScreen)
-const Welcoming = lazy(loadWelcomingScreen)
-const NextMoveScreen = lazy(loadNextMoveScreen)
+const AfterDoneScreen = lazy(loadAfterDoneScreen);
+const BrainDumpScreen = lazy(loadBrainDumpScreen);
+const LandingScreen = lazy(loadLandingScreen);
+const Welcoming = lazy(loadWelcomingScreen);
+const NextMoveScreen = lazy(loadNextMoveScreen);
+const CreatorsScreen = lazy(loadCreatorsScreen);
 
 const preloadScreens = [
   loadAfterDoneScreen,
@@ -31,6 +33,7 @@ const preloadScreens = [
   loadWelcomingScreen,
   loadNextMoveScreen,
   loadProcessingScreen,
+  loadCreatorsScreen,
 ]
 
 /**
@@ -39,7 +42,7 @@ const preloadScreens = [
  * This is never stored. It is always derived from the session, so the session
  * stays the single source of truth and no screen can drift out of sync with it.
  */
-type ScreenName = 'welcoming' | 'landing' |'brain-dump' | 'next-move' | 'after-done'
+type ScreenName = 'welcoming' | 'landing' |'brain-dump' | 'next-move' | 'after-done' | 'creators';
 
 /**
  * How long the processing beat lasts before the next move appears.
@@ -76,6 +79,8 @@ function resolveScreen(session: MindlightSession): ScreenName {
       // Processing failed: put the user back at their dump so they can retry.
       // A dedicated error step arrives with the LLM integration.
       return 'landing'
+    case 'details':
+      return 'creators'
     default:
       return 'welcoming'
   }
@@ -92,26 +97,26 @@ function resolveScreen(session: MindlightSession): ScreenName {
  * Nothing is persisted: a reload starts over.
  */
 function App() {
-  const [session, setSession] = useState<MindlightSession>(createSession)
-  const [nextStepIndex, setNextStepIndex] = useState(0)
-  const [isInitialLoading, setIsInitialLoading] = useState(true)
+  const [session, setSession] = useState<MindlightSession>(createSession);
+  const [nextStepIndex, setNextStepIndex] = useState(0);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   useEffect(() => {
-    let mounted = true
-    let minimumLoadingTimer: ReturnType<typeof setTimeout> | undefined
+    let mounted = true;
+    let minimumLoadingTimer: ReturnType<typeof setTimeout> | undefined;
 
     const finishInitialLoading = () => {
-      const elapsed = performance.now() - startedAt
-      const remaining = Math.max(0, MIN_INITIAL_LOADING_TIME - elapsed)
+      const elapsed = performance.now() - startedAt;
+      const remaining = Math.max(0, MIN_INITIAL_LOADING_TIME - elapsed);
 
       minimumLoadingTimer = setTimeout(() => {
         if (mounted) {
-          setIsInitialLoading(false)
+          setIsInitialLoading(false);
         }
       }, remaining)
     }
 
-    const startedAt = performance.now()
+    const startedAt = performance.now();
 
     Promise.all(preloadScreens.map((loadScreen) => loadScreen())).then(
       finishInitialLoading,
@@ -121,7 +126,7 @@ function App() {
     return () => {
       mounted = false
       if (minimumLoadingTimer) {
-        clearTimeout(minimumLoadingTimer)
+        clearTimeout(minimumLoadingTimer);
       }
     }
   }, [])
@@ -134,7 +139,20 @@ function App() {
 
   /** Leave the entry screen and start writing. */
   const handleGetStarted = useCallback(() => {
-    setSession((current) => ({ ...current, processingState: 'capturing' }))
+    setSession((current) => ({ ...current, processingState: 'capturing' }));
+  }, [])
+
+  const handleOpenCreators = useCallback(() => {
+    setSession((current) => ({ ...current, processingState: 'details' }));
+  }, [])
+
+  /** Glass navigation -> return to the landing screen. */
+  const handleOpenLanding = useCallback(() => {
+    setSession((current) => ({
+      ...current,
+      processingState: 'capturing',
+      userChoice: undefined,
+    }))
   }, [])
 
   /** Landing -> open the free-form brain dump screen. */
@@ -244,7 +262,7 @@ function App() {
   switch (resolveScreen(session)) {
     case 'brain-dump':
       content = (
-        <Shell>
+        <Shell onCreatorsClick={handleOpenCreators} onLandingClick={handleOpenLanding}>
           <BrainDumpScreen
             onSubmit={handleBrainDumpSubmit}
             onFallback={handleBrainDumpFallback}
@@ -256,28 +274,35 @@ function App() {
 
     case 'next-move':
       content = (
-        <Shell>
+        <Shell onCreatorsClick={handleOpenCreators} onLandingClick={handleOpenLanding}>
           <NextMoveScreen nextMove={session.nextMove} onChoose={handleChoose} />
         </Shell>
       )
       break
     case 'after-done':
       content = (
-        <Shell>
+        <Shell onCreatorsClick={handleOpenCreators} onLandingClick={handleOpenLanding}>
           <AfterDoneScreen nextMove={session.nextMove} onStartAgain={handleStartAgain} />
         </Shell>
       )
       break
     case 'landing': 
       content = (
-        <Shell>
+        <Shell onCreatorsClick={handleOpenCreators} onLandingClick={handleOpenLanding}>
           <LandingScreen onClickTyping={handleTyping}  onClickAsking={handleAsking} />
+        </Shell>
+      )
+      break
+    case 'creators':
+      content = (
+        <Shell onCreatorsClick={handleOpenCreators} onLandingClick={handleOpenLanding}>
+          <CreatorsScreen />
         </Shell>
       )
       break
     default:
       content = (
-        <Shell>
+        <Shell onCreatorsClick={handleOpenCreators} onLandingClick={handleOpenLanding}>
           <Welcoming onGetStarted={handleGetStarted} />
         </Shell>
       )
@@ -296,14 +321,22 @@ function App() {
  * The chrome every step shares: the living background, the glass navigation and
  * the centred content column.
  */
-function Shell({ children }: { children: ReactNode }) {
+function Shell({
+  children,
+  onCreatorsClick,
+  onLandingClick,
+}: {
+  children: ReactNode
+  onCreatorsClick: () => void
+  onLandingClick: () => void
+}) {
   return (
     <>
       <div className={styles.app} style={{ backgroundImage: `url(${backgroundImage})` }}>
-        <Header />
+        <Header onCreatorsClick={onCreatorsClick} />
         <main className={styles.main}>{children}</main>
         
-        <GlassNav />
+        <GlassNav onLandingClick={onLandingClick} />
       </div>
     </>
   )

@@ -21,16 +21,17 @@
   position: relative;
   width: 100%;
   min-height: 0;
-  flex: 1 1 auto;
+  flex: 1 1 0;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .orb {
-  width: min(100%, 40svh);
-  height: auto;
+  width: auto;
+  height: 100%;
   max-width: 100%;
+  max-height: 100%;
   aspect-ratio: 1;
   --pearl-orb-size: auto;
 }
@@ -40,16 +41,15 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-weight: 400;
+  font-weight: 500;
   font-style: Regular;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 100%;
   letter-spacing: 0px;
   text-align: center;
   vertical-align: middle;
 
   color: var(--text);
-  text-wrap: balance;
   text-shadow: 0 2px 32px rgb(74 54 98 / 28%);
 
   @media (min-width: 1024px) {
@@ -107,6 +107,8 @@
 
 .hero {
   width: 100%;
+  height: 100%;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -168,10 +170,11 @@
 
 .buttonWrapper button:first-child {
   text-align: left;
+  cursor: text !important;
   color: #7A206066;
   font-weight: 400;
   font-style: Regular;
-  font-size: 18px;
+  font-size: 14px;
   line-height: 100%;
   letter-spacing: 0%;
   vertical-align: middle;
@@ -181,6 +184,16 @@
   justify-content: end;
   align-items: center;
   gap: 14px;
+  padding: 12px 20px;
+
+  @media (min-width: 1024px) {
+    padding: 15px 32px;
+    font-size: 18px;
+  }
+}
+
+.buttonWrapper button:first-child * {
+  cursor: text !important;
 }
 
 .buttonWrapper button:first-child span {
@@ -191,5 +204,25 @@
   border: 1px solid rgba(255, 255, 255, 0.45);
 
   background: rgba(255, 255, 255, 0.15);
-  cursor: text;
+}
+
+@media (min-width: 1024px) {
+  .column {
+    min-height: 0;
+    gap: clamp(0.5rem, 1.5vh, 1rem);
+  }
+
+  .support {
+    margin-top: 20px;
+  }
+
+  .buttonWrapper {
+    margin-top: 8px;
+  }
+
+  .buttonWrapper button {
+    height: clamp(56px, 7vh, 70px);
+    padding-block: 14px;
+    font-size: clamp(18px, 2.3vh, 24px);
+  }
 }

@@ -1,12 +1,28 @@
 import styles from './Header.module.css'
 
-function Header() {
+type HeaderLeftButtonProps = {
+  onClick?: () => void
+  ariaLabel?: string
+}
+
+export function HeaderLeftButton({ onClick, ariaLabel = 'who' }: HeaderLeftButtonProps) {
+  return (
+    <button
+      type="button"
+      className={`${styles.iconButton} ${styles.left}`}
+      aria-label={ariaLabel}
+      onClick={onClick}
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="none"><path d="M20 18V20H18M20 14H19L17 16M16 18H14V20M4 4H10V10H4V4ZM14 4H20V10H14V4ZM4 14H10V20H4V14ZM14 14V15H15V14H14Z" stroke="#7A2060" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/><path d="M17 7H17.001" stroke="#7A2060" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/><path d="M7 7H7.001" stroke="#7A2060" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/><path d="M7 17H7.001" stroke="#7A2060" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/></svg>
+    </button>
+  )
+}
+
+function Header({ onCreatorsClick }: { onCreatorsClick?: () => void }) {
   return (
     <header className={styles.header}>
       <nav className={styles.nav} aria-label="Main">
-        <button type="button" className={`${styles.iconButton} ${styles.left}`} aria-label="who">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="none"><path d="M20 18V20H18M20 14H19L17 16M16 18H14V20M4 4H10V10H4V4ZM14 4H20V10H14V4ZM4 14H10V20H4V14ZM14 14V15H15V14H14Z" stroke="#7A2060" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/><path d="M17 7H17.001" stroke="#7A2060" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/><path d="M7 7H7.001" stroke="#7A2060" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/><path d="M7 17H7.001" stroke="#7A2060" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>
-        </button>
+        <HeaderLeftButton onClick={onCreatorsClick} />
 
         <div className={styles.wordmark} aria-label="home">MindLight</div>
 
