@@ -12,6 +12,7 @@ export type ProcessingState =
   | 'idle' // nothing captured yet
   | 'adding' // the user decided to add new task
   | 'capturing' // the user is writing the brain dump
+  | 'details' // the user opened the creators screen
   | 'processing' // a next move is being derived from the brain dump
   | 'ready' // a next move is available
   | 'error' // processing failed

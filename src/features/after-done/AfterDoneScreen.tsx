@@ -1,5 +1,7 @@
-import type { NextMove } from '../../types/mindlight'
-import styles from './AfterDoneScreen.module.css'
+import type { NextMove } from '../../types/mindlight';
+import MainButton from '../../components/Button';
+import PearlOrb from '../../components/PearlOrb';
+import styles from './AfterDoneScreen.module.css';
 
 type AfterDoneScreenProps = {
   /** The next move the user just accepted, if there is one. */
@@ -15,19 +17,18 @@ type AfterDoneScreenProps = {
  * to land, and to offer the way back into the flow. The real After Done screen
  * (and its visual design) replaces this.
  */
-function AfterDoneScreen({ nextMove, onStartAgain }: AfterDoneScreenProps) {
+function AfterDoneScreen({ onStartAgain }: AfterDoneScreenProps) {
   return (
     <section className={styles.screen}>
       <div className={styles.column}>
-        <p className={styles.eyebrow}>Done</p>
-
-        {nextMove ? <p className={styles.recap}>{nextMove.title}</p> : null}
-
-        <h1 className={styles.headline}>That&rsquo;s the one. Go do it.</h1>
-
-        <button type="button" className={styles.action} onClick={onStartAgain}>
-          Something else on my mind
-        </button>
+        <h2 className={styles.headline}>Nice! One thing down</h2>
+        <div className={styles.orbSlot}>
+          <PearlOrb className={styles.orb} />
+        </div>
+        <h1 className={styles.headline}>Ready for the next one?</h1>
+        <MainButton type="button" onClick={onStartAgain}>
+          Show next step
+        </MainButton>
       </div>
     </section>
   )

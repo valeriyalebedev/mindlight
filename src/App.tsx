@@ -1,16 +1,40 @@
-import { useCallback, useEffect, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import Loader from './components/Loader';
-import AfterDoneScreen from './features/after-done/AfterDoneScreen';
-import BrainDumpScreen from './features/brain-dump/BrainDumpScreen';
-import LandingScreen from './features/landing/LandingScreen';
-import Welcoming from './features/welcoming/WelcomingScreen';
-import NextMoveScreen from './features/next-move/NextMoveScreen';
-import ProcessingScreen from './features/next-move/ProcessingScreen';
+import { STEPTS } from './constants/mock';
 import { createStubNextMove } from './lib/stubNextMove';
 import type { BrainDump, MindlightSession, UserChoice } from './types/mindlight';
 import backgroundImage from './static/baclground.webp';
 import styles from './App.module.css';
+import Header from './components/Header';
+import GlassNav from './components/GlassNav';
+
+const MIN_INITIAL_LOADING_TIME = 3000;
+
+const loadAfterDoneScreen = () => import('./features/after-done/AfterDoneScreen');
+const loadBrainDumpScreen = () => import('./features/brain-dump/BrainDumpScreen');
+const loadLandingScreen = () => import('./features/landing/LandingScreen');
+const loadWelcomingScreen = () => import('./features/welcoming/WelcomingScreen');
+const loadNextMoveScreen = () => import('./features/next-move/NextMoveScreen');
+const loadProcessingScreen = () => import('./features/next-move/ProcessingScreen');
+const loadCreatorsScreen = () => import('./features/creators/Creators');
+
+const AfterDoneScreen = lazy(loadAfterDoneScreen);
+const BrainDumpScreen = lazy(loadBrainDumpScreen);
+const LandingScreen = lazy(loadLandingScreen);
+const Welcoming = lazy(loadWelcomingScreen);
+const NextMoveScreen = lazy(loadNextMoveScreen);
+const CreatorsScreen = lazy(loadCreatorsScreen);
+
+const preloadScreens = [
+  loadAfterDoneScreen,
+  loadBrainDumpScreen,
+  loadLandingScreen,
+  loadWelcomingScreen,
+  loadNextMoveScreen,
+  loadProcessingScreen,
+  loadCreatorsScreen,
+]
 
 /**
  * Which step of the flow is on screen.
@@ -18,7 +42,7 @@ import styles from './App.module.css';
  * This is never stored. It is always derived from the session, so the session
  * stays the single source of truth and no screen can drift out of sync with it.
  */
-type ScreenName = 'welcoming' | 'landing' |'brain-dump' | 'next-move' | 'after-done'
+type ScreenName = 'welcoming' | 'landing' |'brain-dump' | 'next-move' | 'after-done' | 'creators';
 
 /**
  * How long the processing beat lasts before the next move appears.
@@ -50,11 +74,13 @@ function resolveScreen(session: MindlightSession): ScreenName {
       return 'landing'
     case 'ready':
       // "ready" without a move should not happen; treat it as still working.
-      return session.nextMove ? 'next-move' : 'landing'
+      return 'next-move'
     case 'error':
       // Processing failed: put the user back at their dump so they can retry.
       // A dedicated error step arrives with the LLM integration.
       return 'landing'
+    case 'details':
+      return 'creators'
     default:
       return 'welcoming'
   }
@@ -71,29 +97,36 @@ function resolveScreen(session: MindlightSession): ScreenName {
  * Nothing is persisted: a reload starts over.
  */
 function App() {
-  const [session, setSession] = useState<MindlightSession>(createSession)
-  const [isLoading, setIsLoading] = useState(true)
+  const [session, setSession] = useState<MindlightSession>(createSession);
+  const [nextStepIndex, setNextStepIndex] = useState(0);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   useEffect(() => {
-    const startedAt = performance.now()
-    let minimumLoadTimer: ReturnType<typeof setTimeout> | undefined
+    let mounted = true;
+    let minimumLoadingTimer: ReturnType<typeof setTimeout> | undefined;
 
-    const finishLoading = () => {
-      minimumLoadTimer = setTimeout(() => {
-        setIsLoading(false)
-      }, Math.max(0, 5000 - (performance.now() - startedAt)))
+    const finishInitialLoading = () => {
+      const elapsed = performance.now() - startedAt;
+      const remaining = Math.max(0, MIN_INITIAL_LOADING_TIME - elapsed);
+
+      minimumLoadingTimer = setTimeout(() => {
+        if (mounted) {
+          setIsInitialLoading(false);
+        }
+      }, remaining)
     }
 
-    if (document.readyState === 'complete') {
-      finishLoading()
-    } else {
-      window.addEventListener('load', finishLoading, { once: true })
-    }
+    const startedAt = performance.now();
+
+    Promise.all(preloadScreens.map((loadScreen) => loadScreen())).then(
+      finishInitialLoading,
+      finishInitialLoading,
+    )
 
     return () => {
-      window.removeEventListener('load', finishLoading)
-      if (minimumLoadTimer) {
-        clearTimeout(minimumLoadTimer)
+      mounted = false
+      if (minimumLoadingTimer) {
+        clearTimeout(minimumLoadingTimer);
       }
     }
   }, [])
@@ -106,7 +139,20 @@ function App() {
 
   /** Leave the entry screen and start writing. */
   const handleGetStarted = useCallback(() => {
-    setSession((current) => ({ ...current, processingState: 'capturing' }))
+    setSession((current) => ({ ...current, processingState: 'capturing' }));
+  }, [])
+
+  const handleOpenCreators = useCallback(() => {
+    setSession((current) => ({ ...current, processingState: 'details' }));
+  }, [])
+
+  /** Glass navigation -> return to the landing screen. */
+  const handleOpenLanding = useCallback(() => {
+    setSession((current) => ({
+      ...current,
+      processingState: 'capturing',
+      userChoice: undefined,
+    }))
   }, [])
 
   /** Landing -> open the free-form brain dump screen. */
@@ -171,6 +217,19 @@ function App() {
 
   /** What the user decided about the next move. */
   const handleChoose = useCallback((choice: UserChoice) => {
+    if (choice === 'alternative') {
+      const nextStep = STEPTS[nextStepIndex]
+
+      setNextStepIndex((currentIndex) => (currentIndex + 1) % STEPTS.length)
+      setSession((current) => ({
+        ...current,
+        nextMove: nextStep,
+        userChoice: 'alternative',
+        processingState: 'ready',
+      }))
+      return
+    }
+
     setSession((current) => {
       if (choice === 'not-now') {
         // "Not now" is not a failure. The dump is kept and the user is put back
@@ -178,34 +237,32 @@ function App() {
         return { ...current, userChoice: 'not-now', processingState: 'capturing' }
       }
 
-      if (choice === 'alternative') {
-        // Asking for another move keeps the current one, so the replacement is
-        // guaranteed to differ, and runs the processing beat again.
-        return { ...current, userChoice: 'alternative', processingState: 'processing' }
-      }
-
       return { ...current, userChoice: 'accept' }
     })
-  }, [])
+  }, [nextStepIndex])
 
   /** After Done -> start a fresh session. */
   const handleStartAgain = useCallback(() => {
+    const nextStep = STEPTS[nextStepIndex]
+
     setSession((current) => ({
       ...current,
-      processingState: 'capturing',
+      processingState: 'ready',
       brainDump: undefined,
-      nextMove: undefined,
+      nextMove: nextStep,
       userChoice: undefined,
       errorMessage: undefined,
     }))
-  }, [])
+
+    setNextStepIndex((current) => (current + 1) % STEPTS.length)
+  }, [nextStepIndex])
 
   let content: ReactNode
 
   switch (resolveScreen(session)) {
     case 'brain-dump':
       content = (
-        <Shell>
+        <Shell onCreatorsClick={handleOpenCreators} onLandingClick={handleOpenLanding}>
           <BrainDumpScreen
             onSubmit={handleBrainDumpSubmit}
             onFallback={handleBrainDumpFallback}
@@ -217,42 +274,46 @@ function App() {
 
     case 'next-move':
       content = (
-        <Shell>
-          {session.nextMove ? (
-            <NextMoveScreen nextMove={session.nextMove} onChoose={handleChoose} />
-          ) : (
-            <ProcessingScreen />
-          )}
+        <Shell onCreatorsClick={handleOpenCreators} onLandingClick={handleOpenLanding}>
+          <NextMoveScreen nextMove={session.nextMove} onChoose={handleChoose} />
         </Shell>
       )
       break
     case 'after-done':
       content = (
-        <Shell>
+        <Shell onCreatorsClick={handleOpenCreators} onLandingClick={handleOpenLanding}>
           <AfterDoneScreen nextMove={session.nextMove} onStartAgain={handleStartAgain} />
         </Shell>
       )
       break
     case 'landing': 
       content = (
-        <Shell>
+        <Shell onCreatorsClick={handleOpenCreators} onLandingClick={handleOpenLanding}>
           <LandingScreen onClickTyping={handleTyping}  onClickAsking={handleAsking} />
+        </Shell>
+      )
+      break
+    case 'creators':
+      content = (
+        <Shell onCreatorsClick={handleOpenCreators} onLandingClick={handleOpenLanding}>
+          <CreatorsScreen />
         </Shell>
       )
       break
     default:
       content = (
-        <Shell>
+        <Shell onCreatorsClick={handleOpenCreators} onLandingClick={handleOpenLanding}>
           <Welcoming onGetStarted={handleGetStarted} />
         </Shell>
       )
   }
 
   return (
-    <>
-      {content}
-      {isLoading && <Loader />}
-    </>
+    <Suspense
+      fallback={<div className={styles.app} style={{ backgroundImage: `url(${backgroundImage})` }} />}
+    >
+      {isInitialLoading ? <Loader /> : content}
+    </Suspense>
   )
 }
 
@@ -260,13 +321,22 @@ function App() {
  * The chrome every step shares: the living background, the glass navigation and
  * the centred content column.
  */
-function Shell({ children }: { children: ReactNode }) {
+function Shell({
+  children,
+  onCreatorsClick,
+  onLandingClick,
+}: {
+  children: ReactNode
+  onCreatorsClick: () => void
+  onLandingClick: () => void
+}) {
   return (
     <>
       <div className={styles.app} style={{ backgroundImage: `url(${backgroundImage})` }}>
-
+        <Header onCreatorsClick={onCreatorsClick} />
         <main className={styles.main}>{children}</main>
         
+        <GlassNav onLandingClick={onLandingClick} />
       </div>
     </>
   )

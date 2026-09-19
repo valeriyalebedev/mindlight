@@ -1,5 +1,39 @@
 .screen {
+  position: relative;
+  z-index: 2;
   width: 100%;
+}
+
+.orbPortal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: 100%;
+  height: clamp(5rem, 22vw, 10rem);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.portalOrb {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: clamp(10rem, 42vw, 20rem);
+  height: auto;
+  transform: translate(-50%, -50%);
+}
+
+.headingWrapper {
+  margin: 0 auto;
+  max-width: 490px;
+  text-align: center;
+}
+
+.heading {
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 500px;
 }
 
 /*
@@ -7,6 +41,8 @@
  * language is introduced here, because this screen's design is still to come.
  */
 .card {
+  position: relative;
+  z-index: 3;
   width: 100%;
   max-width: var(--column-width);
   margin: 0 auto;
@@ -14,38 +50,66 @@
   flex-direction: column;
   align-items: center;
   gap: 1.15rem;
-  padding: clamp(1.75rem, 5vw, 2.75rem);
-  text-align: center;
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  border-radius: 2rem;
-  backdrop-filter: blur(20px) saturate(150%);
-  -webkit-backdrop-filter: blur(20px) saturate(150%);
+
+  @media(min-width: 1024px) {
+    margin-top: 40px;
+  }
 }
 
 .eyebrow {
-  font-size: 0.8125rem;
-  font-weight: 600;
+  margin: 10px;
+  font-size: 16px;
+  font-weight: 400;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgb(255 255 255 / 85%);
+  color: #7A2060;
+}
+
+.content {
+  padding: 10px;
+  width: 100%;
+  height: auto;
+  gap: 10px;
+  opacity: 1;
+  border-radius: 8px;
+  background-color: #FFFFFF24;
+  text-align: left;
+
+  @media (min-width: 1024px) {
+    padding: 20px;
+    width: 490px;
+  }
 }
 
 .title {
-  font-size: clamp(1.5rem, 4vw, 2.25rem);
-  font-weight: 300;
-  line-height: 1.2;
+  margin-bottom: 10px;
+  font-size: 18px;
+  line-height: 1.1;
   letter-spacing: -0.015em;
   color: var(--text);
   text-wrap: balance;
   text-shadow: 0 2px 32px rgb(74 54 98 / 28%);
+  font-weight: 400;
+  font-style: Regular;
+  line-height: 100%;
+  letter-spacing: 0%;
+
+  @media (min-width: 1024px) {
+    font-size: 24px;
+    line-height: 1.2;
+  }
 }
 
 .rationale {
   max-width: 42ch;
-  font-size: 1.0625rem;
-  line-height: 1.6;
-  color: rgb(255 255 255 / 92%);
+  font-size: 14px;
+  line-height: 1;
+  color: #7A2060;
+
+  @media(min-width: 1024px) {
+    font-size: 18px;
+    line-height: 1.1;
+  }
 }
 
 .actions {
@@ -54,36 +118,84 @@
   justify-content: center;
   gap: 0.75rem;
   margin-top: 0.5rem;
+
+  @media (min-width: 1024px) {
+    margin-top: 25px;
+    width: 490px;
+  }
 }
 
-.primary,
-.secondary {
-  padding: 0.9rem 2rem;
-  font-size: 1rem;
-  font-weight: 400;
-  color: var(--text);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--pill);
-  backdrop-filter: blur(18px) saturate(150%);
-  -webkit-backdrop-filter: blur(18px) saturate(150%);
-  transition: background-color 160ms ease;
+.actions button {
+  width: fit-content;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    color 180ms ease,
+    transform 120ms ease;
+
+  @media (min-width: 1024px) {
+    width: fit-content;
+  }
 }
 
-.primary {
-  background: var(--glass-strong);
+.actions button:hover:not(:disabled),
+.actions[data-feedback='accept'] button:first-child,
+.actions[data-feedback='alternative'] button:nth-child(2),
+.actions[data-feedback='not-now'] button:nth-child(3) {
+  color: #F9B2DD;
+  background: #FFFFFF;
+  border-color: #FFFFFF;
+  box-shadow: 0 4px 14px rgb(122 32 96 / 12%);
+  transform: translateY(-1px);
 }
 
-.secondary {
-  background: transparent;
+.doneLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.primary:hover,
-.secondary:hover {
-  background: rgb(255 255 255 / 22%);
+.checkIcon {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
 }
 
-.primary:focus-visible,
-.secondary:focus-visible {
-  outline: 2px solid var(--text);
-  outline-offset: 3px;
+@media (max-width: 1023px) {
+  .screen {
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .headingWrapper {
+    flex: 0 0 auto;
+  }
+
+  .card {
+    flex: 0 1 auto;
+    min-height: 0;
+    margin: auto;
+  }
+}
+
+@media (min-width: 1024px) {
+  .screen {
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .headingWrapper {
+    flex: 0 0 auto;
+  }
+
+  .card {
+    flex: 0 1 auto;
+    min-height: 0;
+    margin: auto;
+  }
 }

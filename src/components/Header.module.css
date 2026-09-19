@@ -1,0 +1,52 @@
+.header{
+  position: relative;
+  z-index: 10;
+  padding: 0 16px;
+}
+
+.nav {
+  width: 100%;
+  max-width: 490px;
+  margin: 15px auto 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wordmark {
+  grid-column: 2;
+  font-weight: 500;
+  font-style: Medium;
+  font-size: 20px;
+  line-height: 100%;
+  letter-spacing: 0px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  color: var(--text);
+  background: #FFFFFF3D;
+  border: 0;
+  border-radius: 8%;
+  transition: background-color 160ms ease;
+}
+
+.iconButton:hover {
+  background: rgb(255 255 255 / 35%);
+}
+
+.iconButton:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+.icon {
+  width: 1.45rem;
+  height: 1.45rgba(187, 132, 132, 0.16)
+}
