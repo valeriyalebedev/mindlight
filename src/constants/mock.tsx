@@ -114,3 +114,13 @@ export const STEPTS = [
     createdAt: "2026-09-11T10:45:00.000Z",
   },
 ];
+
+export const TIME_MARKER_PHRASES = {
+  default: "This needs your attention now",
+  today: "This needs to be done today",
+  tomorrow: "This can wait until tomorrow",
+  deadline: "This has a deadline",
+  urgent: "This moves an important piece of work forward",
+} as const
+
+export const TRIGGER_WORDS = ["urgent", "today", "tomorrow", "deadline"] as const

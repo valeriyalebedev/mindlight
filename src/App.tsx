@@ -1,7 +1,7 @@
 import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import Loader from './components/Loader';
-import { STEPTS } from './constants/mock';
+import { STEPTS, TIME_MARKER_PHRASES, TRIGGER_WORDS } from './constants/mock';
 import { createStubNextMove } from './lib/stubNextMove';
 import type { BrainDump, MindlightSession, NextMove, UserChoice } from './types/mindlight';
 import backgroundImage from './static/background.webp';
@@ -13,29 +13,19 @@ const MIN_INITIAL_LOADING_TIME = 3000;
 
 function createStepsFromBrainDump(brainDump: BrainDump): NextMove[] {
   const text = brainDump.text.trim()
-  const firstSentenceMatch = text.match(/^[\s\S]*?[.!?](?:\s|$)/)
-  const firstLineBreak = text.indexOf('\n')
-  const titleSource = firstSentenceMatch?.[0]
-    ?? (firstLineBreak >= 0 ? text.slice(0, firstLineBreak) : text)
-  const title = titleSource.replace(/[.!?]+\s*$/, '').trim()
-  const remainingText = firstSentenceMatch
-    ? text.slice(firstSentenceMatch[0].length).trim()
-    : firstLineBreak >= 0
-      ? text.slice(firstLineBreak + 1).trim()
-      : ''
-  const messages = remainingText
-    .split(/\r?\n/)
-    .map((message) => message.trim())
+  const triggerWord = TRIGGER_WORDS.find((trigger) =>
+    new RegExp(`\\b${trigger}\\b`, 'i').test(text),
+  )
+  const timeMarker = triggerWord ?? 'default'
+  const description = TIME_MARKER_PHRASES[timeMarker]
+  const titles = (text.match(/[^.!?]+(?:[.!?]+|$)/g) ?? [text])
+    .map((sentence) => sentence.replace(/[.!?]+$/, '').replace(/\s+/g, ' ').trim())
     .filter(Boolean)
 
-  if (messages.length === 0) {
-    messages.push('')
-  }
-
-  return messages.map((message) => ({
+  return titles.map((title) => ({
     id: crypto.randomUUID(),
     title,
-    rationale: message,
+    rationale: description,
     createdAt: brainDump.createdAt,
   }))
 }
@@ -63,6 +53,7 @@ const loadWelcomingScreen = () => import('./features/welcoming/WelcomingScreen')
 const loadNextMoveScreen = () => import('./features/next-move/NextMoveScreen');
 const loadProcessingScreen = () => import('./features/next-move/ProcessingScreen');
 const loadCreatorsScreen = () => import('./features/creators/Creators');
+const loadNoTaskScreen = () => import('./features/no-task/NoTaskScreen');
 
 const AfterDoneScreen = lazy(loadAfterDoneScreen);
 const BrainDumpScreen = lazy(loadBrainDumpScreen);
@@ -70,6 +61,7 @@ const LandingScreen = lazy(loadLandingScreen);
 const Welcoming = lazy(loadWelcomingScreen);
 const NextMoveScreen = lazy(loadNextMoveScreen);
 const CreatorsScreen = lazy(loadCreatorsScreen);
+const NoTaskScreen = lazy(loadNoTaskScreen);
 
 const preloadScreens = [
   loadAfterDoneScreen,
@@ -79,6 +71,7 @@ const preloadScreens = [
   loadNextMoveScreen,
   loadProcessingScreen,
   loadCreatorsScreen,
+  loadNoTaskScreen,
 ]
 
 /**
@@ -87,7 +80,7 @@ const preloadScreens = [
  * This is never stored. It is always derived from the session, so the session
  * stays the single source of truth and no screen can drift out of sync with it.
  */
-type ScreenName = 'welcoming' | 'landing' |'brain-dump' | 'next-move' | 'after-done' | 'creators';
+type ScreenName = 'welcoming' | 'landing' | 'brain-dump' | 'next-move' | 'after-done' | 'creators' | 'no-task';
 
 /**
  * How long the processing beat lasts before the next move appears.
@@ -105,11 +98,15 @@ function createSession(): MindlightSession {
 }
 
 /** Derives the current step of the flow from the session alone. */
-function resolveScreen(session: MindlightSession): ScreenName {
+function resolveScreen(session: MindlightSession, hasSteps: boolean): ScreenName {
   // Accepting a move is what leads to After Done, so the choice outranks the
   // processing state: the move stays "ready", the screen moves on.
   if (session.userChoice === 'accept') {
     return 'after-done'
+  }
+
+  if (!hasSteps && session.processingState !== 'adding' && session.processingState !== 'details') {
+    return 'no-task'
   }
 
   switch (session.processingState) {
@@ -321,7 +318,7 @@ function App() {
 
   let content: ReactNode
 
-  switch (resolveScreen(session)) {
+  switch (resolveScreen(session, steps.length > 0)) {
     case 'brain-dump':
       content = (
         <Shell onCreatorsClick={handleOpenCreators} onLandingClick={handleOpenLanding}>
@@ -359,6 +356,13 @@ function App() {
       content = (
         <Shell onCreatorsClick={handleOpenCreators} onLandingClick={handleOpenLanding}>
           <CreatorsScreen />
+        </Shell>
+      )
+      break
+    case 'no-task':
+      content = (
+        <Shell onCreatorsClick={handleOpenCreators} onLandingClick={handleOpenLanding}>
+          <NoTaskScreen onAddNew={handleTyping} />
         </Shell>
       )
       break
