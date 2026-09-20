@@ -3,13 +3,58 @@ import type { ReactNode } from 'react';
 import Loader from './components/Loader';
 import { STEPTS } from './constants/mock';
 import { createStubNextMove } from './lib/stubNextMove';
-import type { BrainDump, MindlightSession, UserChoice } from './types/mindlight';
+import type { BrainDump, MindlightSession, NextMove, UserChoice } from './types/mindlight';
 import backgroundImage from './static/background.webp';
 import styles from './App.module.css';
 import Header from './components/Header';
 import GlassNav from './components/GlassNav';
 
 const MIN_INITIAL_LOADING_TIME = 3000;
+
+function createStepsFromBrainDump(brainDump: BrainDump): NextMove[] {
+  const text = brainDump.text.trim()
+  const firstSentenceMatch = text.match(/^[\s\S]*?[.!?](?:\s|$)/)
+  const firstLineBreak = text.indexOf('\n')
+  const titleSource = firstSentenceMatch?.[0]
+    ?? (firstLineBreak >= 0 ? text.slice(0, firstLineBreak) : text)
+  const title = titleSource.replace(/[.!?]+\s*$/, '').trim()
+  const remainingText = firstSentenceMatch
+    ? text.slice(firstSentenceMatch[0].length).trim()
+    : firstLineBreak >= 0
+      ? text.slice(firstLineBreak + 1).trim()
+      : ''
+  const messages = remainingText
+    .split(/\r?\n/)
+    .map((message) => message.trim())
+    .filter(Boolean)
+
+  if (messages.length === 0) {
+    messages.push('')
+  }
+
+  return messages.map((message) => ({
+    id: crypto.randomUUID(),
+    title,
+    rationale: message,
+    createdAt: brainDump.createdAt,
+  }))
+}
+
+function insertStepsWithSpacing(newSteps: NextMove[], currentSteps: NextMove[]): NextMove[] {
+  const mergedSteps: NextMove[] = []
+
+  newSteps.forEach((step, index) => {
+    mergedSteps.push(step)
+
+    const existingStep = currentSteps[index]
+    if (existingStep) {
+      mergedSteps.push(existingStep)
+    }
+  })
+
+  mergedSteps.push(...currentSteps.slice(newSteps.length))
+  return mergedSteps
+}
 
 const loadAfterDoneScreen = () => import('./features/after-done/AfterDoneScreen');
 const loadBrainDumpScreen = () => import('./features/brain-dump/BrainDumpScreen');
@@ -98,7 +143,7 @@ function resolveScreen(session: MindlightSession): ScreenName {
  */
 function App() {
   const [session, setSession] = useState<MindlightSession>(createSession);
-  const [nextStepIndex, setNextStepIndex] = useState(0);
+  const [steps, setSteps] = useState<NextMove[]>(() => [...STEPTS]);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   useEffect(() => {
@@ -181,20 +226,23 @@ function App() {
       return {
         ...current,
         brainDump,
-        nextMove: createStubNextMove(brainDump, current.nextMove?.title),
+        nextMove: steps[0] ?? createStubNextMove(brainDump, current.nextMove?.title),
         userChoice: undefined,
         processingState: 'ready',
         errorMessage: undefined,
       }
     })
-  }, [])
+  }, [steps])
 
   /** The dump is in: processing begins. */
   const handleBrainDumpSubmit = useCallback((brainDump: BrainDump) => {
+    const nextSteps = createStepsFromBrainDump(brainDump)
+
+    setSteps((currentSteps) => insertStepsWithSpacing(nextSteps, currentSteps))
     setSession((current) => ({
       ...current,
       brainDump,
-      nextMove: undefined,
+      nextMove: nextSteps[0],
       userChoice: undefined,
       errorMessage: undefined,
     }))
@@ -211,26 +259,34 @@ function App() {
       return {
         ...current,
         brainDump,
-        nextMove: createStubNextMove(brainDump, current.nextMove?.title),
+        nextMove: current.nextMove ?? steps[0] ?? createStubNextMove(brainDump),
         userChoice: undefined,
         processingState: 'ready',
         errorMessage: undefined,
       }
     })
-  }, [])
+  }, [steps])
 
   /** What the user decided about the next move. */
   const handleChoose = useCallback((choice: UserChoice) => {
     if (choice === 'alternative') {
-      const nextStep = STEPTS[nextStepIndex]
+      setSession((current) => {
+        if (steps.length === 0) {
+          return current
+        }
 
-      setNextStepIndex((currentIndex) => (currentIndex + 1) % STEPTS.length)
-      setSession((current) => ({
-        ...current,
-        nextMove: nextStep,
-        userChoice: 'alternative',
-        processingState: 'ready',
-      }))
+        const currentIndex = current.nextMove
+          ? steps.findIndex((step) => step.id === current.nextMove?.id)
+          : -1
+        const nextStep = steps[(currentIndex + 1 + steps.length) % steps.length]
+
+        return {
+          ...current,
+          nextMove: nextStep,
+          userChoice: 'alternative',
+          processingState: 'ready',
+        }
+      })
       return
     }
 
@@ -243,23 +299,25 @@ function App() {
 
       return { ...current, userChoice: 'accept' }
     })
-  }, [nextStepIndex])
+
+    if (choice === 'accept') {
+      setSteps((currentSteps) => currentSteps.filter((step) => step.id !== session.nextMove?.id))
+    }
+  }, [session.nextMove?.id, steps])
 
   /** After Done -> start a fresh session. */
   const handleStartAgain = useCallback(() => {
-    const nextStep = STEPTS[nextStepIndex]
+    const nextStep = steps[0]
 
     setSession((current) => ({
       ...current,
-      processingState: 'ready',
+      processingState: nextStep ? 'ready' : 'capturing',
       brainDump: undefined,
       nextMove: nextStep,
       userChoice: undefined,
       errorMessage: undefined,
     }))
-
-    setNextStepIndex((current) => (current + 1) % STEPTS.length)
-  }, [nextStepIndex])
+  }, [steps])
 
   let content: ReactNode
 

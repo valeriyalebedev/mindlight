@@ -113,10 +113,4 @@ export const STEPTS = [
     rationale: "Make sure important files and photos are backed up.",
     createdAt: "2026-09-11T10:45:00.000Z",
   },
-  {
-    id: "352718",
-    title: "Plan the week",
-    rationale: "Identify the main tasks and organize them across the week.",
-    createdAt: "2026-09-11T13:10:00.000Z",
-  },
 ];

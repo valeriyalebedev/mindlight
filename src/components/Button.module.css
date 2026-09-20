@@ -44,9 +44,11 @@
 }
 
 
-.mainButton:hover:not(:disabled) {
-  box-shadow: 0px -3px 6px 0px #FFFFFFB2 inset;
-  background: linear-gradient(267.35deg, rgba(182, 161, 241, 0.6) -2.9%, #FFAAEB 91.18%);
+@media (hover: hover) and (pointer: fine) {
+  .mainButton:hover:not(:disabled) {
+    box-shadow: 0px -3px 6px 0px #FFFFFFB2 inset;
+    background: linear-gradient(267.35deg, rgba(182, 161, 241, 0.6) -2.9%, #FFAAEB 91.18%);
+  }
 }
 
 
