@@ -1,4 +1,5 @@
 import styles from './Header.module.css'
+import logo from '../static/logo.svg'
 
 type HeaderLeftButtonProps = {
   onClick?: () => void
@@ -24,7 +25,10 @@ function Header({ onCreatorsClick }: { onCreatorsClick?: () => void }) {
       <nav className={styles.nav} aria-label="Main">
         <HeaderLeftButton onClick={onCreatorsClick} />
 
-        <div className={styles.wordmark} aria-label="home">MindLight</div>
+        <div className={styles.wordmark} aria-label="home">
+          <img className={styles.logo} src={logo} alt="" aria-hidden="true" />
+          <span>MindLight</span>
+        </div>
 
         <button type="button" className={`${styles.iconButton} ${styles.right}`} aria-label="profile">
 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
