@@ -42,7 +42,10 @@ function Creators() {
         <ul className={styles.list}>
           {CREATORS.map((creator) => (
             <li key={creator.name} className={styles.creator}>
-              <span>{creator.name}</span>
+              <div className={styles.creatorInfo}>
+                <span>{creator.name}</span>
+                <span className={styles.role}>{creator.role}</span>
+              </div>
               <a
                 className={styles.desktopQrLink}
                 href={creator.link}

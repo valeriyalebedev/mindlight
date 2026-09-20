@@ -4,7 +4,7 @@ import Loader from './components/Loader';
 import { STEPTS } from './constants/mock';
 import { createStubNextMove } from './lib/stubNextMove';
 import type { BrainDump, MindlightSession, UserChoice } from './types/mindlight';
-import backgroundImage from './static/baclground.webp';
+import backgroundImage from './static/background.webp';
 import styles from './App.module.css';
 import Header from './components/Header';
 import GlassNav from './components/GlassNav';
@@ -143,7 +143,11 @@ function App() {
   }, [])
 
   const handleOpenCreators = useCallback(() => {
-    setSession((current) => ({ ...current, processingState: 'details' }));
+    setSession((current) => ({
+      ...current,
+      processingState: 'details',
+      userChoice: undefined,
+    }));
   }, [])
 
   /** Glass navigation -> return to the landing screen. */
