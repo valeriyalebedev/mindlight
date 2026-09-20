@@ -72,6 +72,7 @@ function NextMoveScreen({ nextMove, onChoose }: NextMoveScreenProps) {
             {nextMove.title}
           </h1>
           <p className={styles.rationale}>{nextMove.rationale}</p>
+          <p className={styles.reassurance}>The rest is off your mind for now.</p>
         </div>
 
         

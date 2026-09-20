@@ -57,7 +57,7 @@ function LandingScreen({ onClickTyping,  onClickAsking }: LandingScreenProps) {
                 </defs>
               </svg>
             </MainButton>
-            <MainButton onClick={onClickAsking} type="button">Ask Mindlignt</MainButton>
+            <MainButton onClick={onClickAsking} type="button">Ask MindLight</MainButton>
           </div>
           </div>
       </div>

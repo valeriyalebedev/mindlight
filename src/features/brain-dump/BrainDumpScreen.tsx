@@ -50,7 +50,7 @@ function BrainDumpScreen({ onSubmit, onFallback }: BrainDumpScreenProps) {
               </div>,
               document.body,
             )}
-            <h1 className={styles.headline}>Add your thougnts</h1>
+            <h1 className={styles.headline}>Add your thoughts</h1>
             <p className={styles.support}>You can write, paste, upload files or take a photo</p>
             <BrainDumpForm onSubmit={handleSubmit} />
           </div>

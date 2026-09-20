@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import styles from './BrainDumpThinking.module.css';
 
-const STEPS = ['reading', 'defining', 'prioritising', 'finishing'] as const
+const STEPS = ['taking', 'sorting', 'release'] as const
 
 type Step = (typeof STEPS)[number]
 
@@ -10,49 +10,34 @@ type BrainDumpThinkingProps = {
 }
 
 const STEP_LABELS: Record<Step, string> = {
-  reading: 'Reading your input',
-  defining: 'Defining tasks and due dates',
-  prioritising: 'Prioritising',
-  finishing: 'Almost there...',
+  taking: 'Taking this off your mind…',
+  sorting: 'Sorting through what matters.',
+  release: 'You don’t need to keep track of everything right now.',
 }
 
+/** How long each line holds before the next one lights up. */
+const STEP_MS = 800
+/** A short beat with every line finished, before the next move appears. */
+const HOLD_MS = 500
+
 function BrainDumpThinking({ fallback }: BrainDumpThinkingProps) {
-  const [completed, setCompleted] = useState<Step[]>([])
+  const [stepIndex, setStepIndex] = useState(0)
+  const completed = STEPS.slice(0, stepIndex)
 
   useEffect(() => {
-    let timer: ReturnType<typeof setTimeout> | undefined
-    let nextStepIndex = 0
+    const isFinished = stepIndex >= STEPS.length
 
-    function scheduleNextStep() {
-      if (nextStepIndex > STEPS.length) {
+    const timer = setTimeout(() => {
+      if (isFinished) {
         fallback()
         return
       }
 
-      const delay = nextStepIndex === 0 ? 1000 : 2000
+      setStepIndex((current) => current + 1)
+    }, isFinished ? HOLD_MS : STEP_MS)
 
-      timer = setTimeout(() => {
-        const step = STEPS[nextStepIndex]
-        nextStepIndex += 1
-        setCompleted((previous) => [...previous, step])
-
-        if (nextStepIndex > STEPS.length) {
-          fallback()
-          return
-        }
-
-        scheduleNextStep()
-      }, delay)
-    }
-
-    scheduleNextStep()
-
-    return () => {
-      if (timer) {
-        clearTimeout(timer)
-      }
-    }
-  }, [fallback])
+    return () => clearTimeout(timer)
+  }, [stepIndex, fallback])
 
   return (
     <div className={styles.brainDumpThinking}>
