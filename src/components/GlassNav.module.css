@@ -54,8 +54,10 @@
   justify-self: end;
 }
 
-.iconButton:hover {
-  background: rgb(255 255 255 / 16%);
+@media (hover: hover) and (pointer: fine) {
+  .iconButton:hover {
+    background: rgb(255 255 255 / 16%);
+  }
 }
 
 .iconButton:focus-visible {

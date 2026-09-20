@@ -19,8 +19,9 @@ Ship the smallest end-to-end loop, entirely in the browser:
 Session state is kept in React memory only. Reloading the page starts a new session.
 
 The **whole loop is walkable in the browser today**: welcoming, landing, brain dump,
-processing, one next move, and After Done after accepting. The Creators screen is
-available from the header. Two honest caveats:
+processing, one next move, After Done after accepting, and the empty-state screen
+after all steps are completed. The Creators screen is available from the header.
+Two honest caveats:
 
 - The next move is produced by a **local placeholder** (`src/lib/stubNextMove.ts`),
   not by a model. The LLM integration is **not built yet**.
@@ -33,6 +34,34 @@ Current implementation notes:
   not wired up yet.
 - The current processing experience is rendered by `BrainDumpThinking.tsx`.
   `ProcessingScreen.tsx` is prepared for the flow but is not currently rendered.
+- `NoTaskScreen.tsx` is shown when the steps state is empty. Its `Add new one`
+  button opens the brain dump form again, and the screen includes the shared
+  `PearlOrb` component.
+
+### Brain dump to steps
+
+The current text-to-step flow is implemented locally in `src/App.tsx`:
+
+1. The submitted message is trimmed and checked against `TRIGGER_WORDS`. The
+   first matching trigger is saved as the time marker; if there is no match,
+   `default` is used.
+2. The matching phrase from `TIME_MARKER_PHRASES` becomes the `rationale` for
+   every generated step.
+3. Every sentence ending with `.`, `!`, or `?` becomes a separate step title.
+   Sentence-ending punctuation is removed, while the original sentence order is
+   preserved.
+4. The initial `steps` state is copied from `src/constants/mock.tsx`. New steps
+   are inserted into that state with one existing step between consecutive new
+   steps whenever an existing step is available. For example:
+
+   ```text
+   New A, Existing 1, New B, Existing 2, New C, Existing 3
+   ```
+
+5. The first generated step is assigned to `session.nextMove` and shown first on
+   the next-step screen. `Done` removes the currently shown step from `steps` by
+   its id. The next `Show next step` action displays the first remaining step;
+   `Skip` advances through the same ordered array without deleting the step.
 
 Planned screens still to build: home, history, document view, and settings.
 
@@ -123,12 +152,16 @@ mindlight/
 |  |  |  +- NextMoveScreen.tsx
 |  |  |- after-done/                  # Screen shown after accepting a move
 |  |  |  +- AfterDoneScreen.tsx
+|  |  |- no-task/                     # Empty state after all steps are completed
+|  |  |  |- NoTaskScreen.tsx
+|  |  |  +- NoTaskScreen.module.css
 |  |  +- creators/                    # Creators information screen
 |  |     +- Creators.tsx
 |  |- lib/
 |  |  +- stubNextMove.ts              # Placeholder next move before LLM integration
 |  |- static/                         # Images used by the app
 |  |  |- background.webp
+|  |  |- favicon.ico
 |  |  |- Orb.png
 |  |  |- qr-anna.png
 |  |  |- qr-marina.png

@@ -139,7 +139,6 @@
   }
 }
 
-.actions button:hover:not(:disabled),
 .actions[data-feedback='accept'] button:first-child,
 .actions[data-feedback='alternative'] button:nth-child(2),
 .actions[data-feedback='not-now'] button:nth-child(3) {
@@ -148,6 +147,16 @@
   border-color: #FFFFFF;
   box-shadow: 0 4px 14px rgb(122 32 96 / 12%);
   transform: translateY(-1px);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .actions button:hover:not(:disabled) {
+    color: #F9B2DD;
+    background: #FFFFFF;
+    border-color: #FFFFFF;
+    box-shadow: 0 4px 14px rgb(122 32 96 / 12%);
+    transform: translateY(-1px);
+  }
 }
 
 .doneLabel {

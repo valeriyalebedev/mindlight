@@ -118,8 +118,10 @@
   line-height: 1;
 }
 
-.closeButton:hover {
-  background: rgb(122 32 96 / 10%);
+@media (hover: hover) and (pointer: fine) {
+  .closeButton:hover {
+    background: rgb(122 32 96 / 10%);
+  }
 }
 
 .closeButton:focus-visible {
@@ -160,9 +162,11 @@
     transition: transform 160ms ease, box-shadow 160ms ease;
   }
 
-  .desktopQrLink:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0.5rem 1rem rgb(74 54 98 / 20%);
+  @media (hover: hover) and (pointer: fine) {
+    .desktopQrLink:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0.5rem 1rem rgb(74 54 98 / 20%);
+    }
   }
 
   .desktopQrLink:focus-visible {

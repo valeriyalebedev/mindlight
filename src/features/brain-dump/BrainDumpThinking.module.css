@@ -95,7 +95,7 @@
     width: 3px;
     height: calc(100% - 20px);
 
-    background: #7A2060;
+    background: #7A206026;
   }
 
   /* Завершенный шаг */
@@ -116,9 +116,8 @@
     background-position: center;
   }
 
-  .brainDumpThinking li[data-completed="true"]::after {
+  .brainDumpThinking li[data-completed="true"]:has(+ li[data-completed="true"])::after {
     background: #7A2060;
-    opacity: 0.9;
   }
 }
 
@@ -171,8 +170,11 @@
     width: 90%;
     height: 2px;
 
+    background: #7A206026;
+  }
+
+  .brainDumpThinking li[data-completed="true"]:has(+ li[data-completed="true"])::after {
     background: #7A2060;
-    opacity: 0.9;
   }
 
   .brainDumpThinking li[data-completed="true"]::before {

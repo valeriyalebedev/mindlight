@@ -87,8 +87,10 @@
   border: 0;
 }
 
-.addFilesBtn:hover:not(:disabled) {
-  background: rgb(255 255 255 / 22%);
+@media (hover: hover) and (pointer: fine) {
+  .addFilesBtn:hover:not(:disabled) {
+    background: rgb(255 255 255 / 22%);
+  }
 }
 
 .addFilesBtn:disabled {

@@ -72,8 +72,10 @@
   transition: background-color 160ms ease;
 }
 
-.action:hover {
-  background: rgb(255 255 255 / 22%);
+@media (hover: hover) and (pointer: fine) {
+  .action:hover {
+    background: rgb(255 255 255 / 22%);
+  }
 }
 
 .action:focus-visible {
